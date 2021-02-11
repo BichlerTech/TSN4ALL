@@ -15,5 +15,6 @@ Test the actual editor on https://www.bichler.tech/download/tsn4all/
   * revision
   * builddate
   * image (png, jpg)
-  * portcount
-  * speed of each port
+  * portcount in first step, should be replaced by yang model
+  * speed of each port in first step, should replaced by yang model
+  * (yang interfaces definition) second step
