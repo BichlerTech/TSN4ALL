@@ -1,7 +1,7 @@
 # TSN4ALL
 A TSN (time sensitive networking) configuration tool to manage different ethernet devices in a local network.
 
-run the actual source on https://www.bichler.tech/download/tsn4all/
+Test the actual editor on https://www.bichler.tech/download/tsn4all/
 
   ## Editor elements:
   The editor should constist of a menu bar, left or right to the main editor. The menu should contain all installes eth-devices.
