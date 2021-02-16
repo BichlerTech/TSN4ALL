@@ -3,186 +3,239 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 };
 
 function save() {
-	var devices=document.getElementById("node-layer");
-	alert(devices.innerHTML);
-	var connections=document.getElementById("connections-layer");
-	alert(connections.innerHTML);
+  var devices = document.getElementById("node-layer");
+  alert(devices.innerHTML);
+  var connections = document.getElementById("connections-layer");
+  alert(connections.innerHTML);
 }
 
 function load(devices) {
-	var devices=document.getElementById("node-layer");
-	devices.innerx
+  var devices = document.getElementById("node-layer");
+  devices.innerx
 }
 
 function switch2Graphics() {
-	document.getElementById('main_graphics').style.display = 'block';
-	document.getElementById('main_parameter').style.display = 'none';
-	document.getElementById('main_result').style.display = 'none';
-	
-	document.getElementById('graphics').style.backgroundColor = '#1a1a1a';
-	document.getElementById('params').style.backgroundColor = 'black';
-	document.getElementById('result').style.backgroundColor = 'black';
+  document.getElementById('main_graphics').style.display = 'block';
+  document.getElementById('main_parameter').style.display = 'none';
+  document.getElementById('main_result').style.display = 'none';
+
+  document.getElementById('graphics').style.backgroundColor = '#1a1a1a';
+  document.getElementById('params').style.backgroundColor = 'black';
+  document.getElementById('result').style.backgroundColor = 'black';
 }
 
 function switch2Parameter() {
-	document.getElementById('main_graphics').style.display = 'none';
-	document.getElementById('main_parameter').style.display = 'block';
-	document.getElementById('main_result').style.display = 'none';
-	
-	document.getElementById('graphics').style.backgroundColor = 'black';
-	document.getElementById('params').style.backgroundColor = '#1a1a1a';
-	document.getElementById('result').style.backgroundColor = 'black';
+  document.getElementById('main_graphics').style.display = 'none';
+  document.getElementById('main_parameter').style.display = 'block';
+  document.getElementById('main_result').style.display = 'none';
+
+  document.getElementById('graphics').style.backgroundColor = 'black';
+  document.getElementById('params').style.backgroundColor = '#1a1a1a';
+  document.getElementById('result').style.backgroundColor = 'black';
 }
 
 function switch2Result() {
-	document.getElementById('main_graphics').style.display = 'none';
-	document.getElementById('main_parameter').style.display = 'none';
-	document.getElementById('main_result').style.display = 'block';
-	
-	document.getElementById('graphics').style.backgroundColor = 'black';
-	document.getElementById('params').style.backgroundColor = 'black';
-	document.getElementById('result').style.backgroundColor = '#1a1a1a';
+  document.getElementById('main_graphics').style.display = 'none';
+  document.getElementById('main_parameter').style.display = 'none';
+  document.getElementById('main_result').style.display = 'block';
+
+  document.getElementById('graphics').style.backgroundColor = 'black';
+  document.getElementById('params').style.backgroundColor = 'black';
+  document.getElementById('result').style.backgroundColor = '#1a1a1a';
+};
+
+// Array where newly created devices get stored as object
+
+const DeviceArray = [];
+
+// Array for All Ports with unique id of all Devices
+
+const Ports = {
+  inputPorts:[],
+  outputPorts:[]
+}
+
+
+
+
+function storeDevice(ETHDevice) {
+  DeviceArray.push(ETHDevice);
+};
+
+class InputPort {
+  constructor(id) {
+    this.id = `inPort_${id}`;
+    this.isInput = true;
+    this.connectedTo = null;
+  }
+  // Add port to Ports object
+  addToPorts(){
+    Ports.inputPorts.push(this)
+  }
+
+};
+
+class OutputPort {
+  constructor(id) {
+    this.id = `outPort_${id}`;
+    this.isOutput = true;
+    this.connectedTo = null;
+  }
+  // Add port to Ports object
+  addToPorts(){
+    Ports.outputPorts.push(this)
+  }
 }
 
 // add a new EthDevice
 class ETHDeviceView {
-	constructor(name, ports, args) {
-		this.id = `ethdevview_${++nextUid}`;
-		this.name = name;
-		this.ports = ports;
-		this.arguments = args;
-	}
-	
-	addShape(element) {
-	  const shape = new ETHDevice(element, 50, 50);
-	  shapeLookup[shape.id] = shape;
-      shapes.push(shape);
-	}
-  
-	add() {
-		var rootg = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        rootg.setAttribute('class','node-container');
-		var root=document.getElementById("node-layer");
-		root.appendChild(rootg);
-		
-		shapeElements.push(rootg);
-		
-		// create node header
-		var header = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		header.setAttribute('class','node-background');
-		header.setAttribute('width','124');
-		header.setAttribute('height', (this.ports - 1)*25 + 78);
-		header.setAttribute('rx','6');
-		header.setAttribute('ry','6');
-		rootg.appendChild(header);
-		
-		var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		g.setAttribute('class','node-header');
-		rootg.appendChild(g);
-		
-		var irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','header-round-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height','40');
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','2');
-		irect.setAttribute('rx','4');
-		irect.setAttribute('ry','4');
-		g.appendChild(irect);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','header-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height','36');
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','6');
-		g.appendChild(irect);
-		
-		var itext = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		itext.setAttribute('class','header-title');
-		itext.setAttribute('x','62');
-		itext.setAttribute('y','30');
-		itext.innerHTML = this.name;
-		g.appendChild(itext);
-		
-		g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		g.setAttribute('class','node-content');
-		rootg.appendChild(g);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','content-round-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height', (this.ports - 1)*25 + 32);
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','44');
-		irect.setAttribute('rx','4');
-		irect.setAttribute('ry','4');
-		g.appendChild(irect);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','content-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height',(this.ports - 1)*25 + 27);
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','44');
-		g.appendChild(irect);
-		
-		this.addIOputs(g);
-		
-		this.addShape(rootg);
-	}
-	
-	addIOputs(root, ) {
-		var inputs = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		inputs.setAttribute('class', 'inoutputs');
-		root.appendChild(inputs);
-		var i;
-		
-		for (i = 1; i <= this.ports; i++) { 
-			this.addIO(inputs, i);
-		}
-	}
-	
-	addIO(ios, index) {
-		var input = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		input.setAttribute('class', 'inoutput-field');
-		input.setAttribute('transform', 'translate(0, ' + (25 + 25*index) + ')');
-		ios.appendChild(input);
-		var innerinput = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		innerinput.setAttribute('class', 'port');
-		innerinput.setAttribute('data-clickable', 'false');
-		input.appendChild(innerinput);
-		
-		var oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		oport.setAttribute('class', 'port-outer');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '7.5');	
-		innerinput.appendChild(oport);
-		
-		oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		oport.setAttribute('class', 'port-inner');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '5');	
-		innerinput.appendChild(oport);
-		
-		oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		oport.setAttribute('class', 'port-scrim');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '7.5');
-		oport.setAttribute('data-clickable', 'false');
-		oport.setAttribute('data-drag', 'port_5:port');
-		innerinput.appendChild(oport);
-		
-		var innertext = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		innertext.setAttribute('class', 'port-label');
-		innertext.setAttribute('x', '96');
-		innertext.setAttribute('y', '14');
-		innertext.innerHTML = "ETH-Port " + index;
-		input.appendChild(innertext);
-	}
+  constructor(name, ports, args) {
+    this.id = `ethdevview_${DeviceArray.length + 1}`;
+    this.name = name;
+    this.ports = ports;
+    this.arguments = args;
+    this.inputPorts = [];
+    this.outputPorts = [];
+  }
+
+
+
+  addShape(element) {
+    const shape = new ETHDevice(element, 50, 50);
+    shapeLookup[shape.id] = shape;
+    shapes.push(shape);
+    // push Device into Device Array for easier overview
+    DeviceArray.push(this)
+  }
+
+  add() {
+
+
+    var rootg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    rootg.setAttribute('class', 'node-container');
+    rootg.setAttribute('width', '300');
+    var root = document.getElementById("node-layer");
+    root.setAttribute('x', '30');
+    root.setAttribute('y', '30');
+    root.setAttribute('width', '300')
+    root.appendChild(rootg);
+
+    shapeElements.push(rootg);
+
+    // create node header
+    var header = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    header.setAttribute('class', 'node-background');
+    header.setAttribute('width', '200');
+    header.setAttribute('x', '50')
+    header.setAttribute('height', (this.ports - 1) * 25 + 78);
+    // header.setAttribute('rx', '6');
+    // header.setAttribute('ry', '6');
+    rootg.appendChild(header);
+
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute('class', 'node-header');
+    g.setAttribute('width', '200')
+    rootg.appendChild(g);
+
+    let irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    irect.setAttribute('class', 'header-rect');
+    irect.setAttribute('width', '200');
+    irect.setAttribute('x', '50');
+    irect.setAttribute('height', '40');
+    g.appendChild(irect);
+
+    var itext = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    itext.setAttribute('class', 'header-title');
+    itext.setAttribute('x', '150');
+    itext.setAttribute('y', '25');
+    itext.innerHTML = this.name;
+    g.appendChild(itext);
+
+    g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute('class', 'node-content');
+    rootg.appendChild(g);
+
+    irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    irect.setAttribute('class', 'content-round-rect');
+    irect.setAttribute('width', '100');
+    irect.setAttribute('height', (this.ports - 1) * 25 + 32);
+    irect.setAttribute('x', '150');
+    irect.setAttribute('y', '44');
+    irect.setAttribute('rx', '4');
+    irect.setAttribute('ry', '4');
+    g.appendChild(irect);
+
+    irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    irect.setAttribute('class', 'content-rect');
+    irect.setAttribute('width', '100');
+    irect.setAttribute('height', (this.ports - 1) * 25 + 27);
+    irect.setAttribute('x', '150');
+    irect.setAttribute('y', '44');
+    g.appendChild(irect);
+
+    this.addIOputs(g);
+
+    this.addShape(rootg);
+  }
+
+  addIOputs(root,) {
+    var inputs = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    inputs.setAttribute('class', 'inoutputs');
+    root.appendChild(inputs);
+    var i;
+
+    for (i = 1; i <= this.ports; i++) {
+      this.addIO(inputs, i);
+      // creates new input object and stores it in instance of ETH-Device
+      const input_id = Ports.inputPorts.length + i;
+      const inputPort = new InputPort(input_id);
+      this.inputPorts.push(inputPort);
+      // creates new output object and stores it in instance of ETH-Device
+      const output_id = Ports.outputPorts.length + i;
+      const outputPort = new OutputPort(output_id);
+      this.outputPorts.push(outputPort)
+    }
+  }
+
+  addIO(ios, index) {
+    var input = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    input.setAttribute('class', 'inoutput-field');
+    input.setAttribute('transform', 'translate(0, ' + (25 + 25 * index) + ')');
+    ios.appendChild(input);
+    var innerinput = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    innerinput.setAttribute('class', 'port');
+    innerinput.setAttribute('data-clickable', 'false');
+    input.appendChild(innerinput);
+
+    var oport = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+    oport.setAttribute('class', 'port-scrim');
+    oport.setAttribute('points', '250,0 260,10 250,20')
+    oport.setAttribute('data-clickable', 'false');
+    oport.setAttribute('data-drag', 'port_5:port');
+    innerinput.appendChild(oport);
+
+    var outputText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    outputText.setAttribute('class', 'port-label');
+    outputText.setAttribute('x', '240');
+    outputText.setAttribute('y', '14');
+    outputText.innerHTML = "ETH-Out " + index;
+    input.appendChild(outputText);
+
+    var iport = document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
+    iport.setAttribute('class', 'port-scrim_input');
+    iport.setAttribute('points', '50,0 50,20 40,20 45,10 40,0');
+    iport.setAttribute('data-clickable', 'false');
+    iport.setAttribute('data-drag', 'port_5:port');
+    innerinput.appendChild(iport);
+
+    var inputText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    inputText.setAttribute('class', 'port-label');
+    inputText.setAttribute('x', '115');
+    inputText.setAttribute('y', '14');
+    inputText.innerHTML = "ETH-In " + index;
+    input.appendChild(inputText);
+    
+  }
 }
 
 //
@@ -224,7 +277,8 @@ class Connector {
 
     TweenLite.set([this.inputHandle, this.inoutputHandle], {
       x: port.global.x,
-      y: port.global.y });
+      y: port.global.y
+    });
 
 
 
@@ -264,14 +318,16 @@ class Connector {
 
       TweenLite.set(this.inputHandle, {
         x: port.global.x,
-        y: port.global.y });
+        y: port.global.y
+      });
 
 
     } else if (port === this.inoutputPort) {
 
       TweenLite.set(this.inoutputHandle, {
         x: port.global.x,
-        y: port.global.y });
+        y: port.global.y
+      });
 
     }
 
@@ -292,8 +348,8 @@ class Connector {
 
       if (Draggable.hitTest(this.dragElement, shape.element)) {
 
-     //   const ports = this.isInput ? shape.inoutputs : shape.inputs;
-		const ports = shape.inoutputs;
+        //   const ports = this.isInput ? shape.inoutputs : shape.inputs;
+        const ports = shape.inoutputs;
 
         for (let port of ports) {
 
@@ -360,7 +416,8 @@ class Connector {
 
   onDragEnd() {
     this.placeHandle();
-  }}
+  }
+}
 
 
 //
@@ -426,13 +483,16 @@ class NodePort {
 
   update() {
 
-    const transform = this.portElement.getTransformToElement(diagramElement);
-    this.global = this.center.matrixTransform(transform);
+    // const transform = this.portElement.getTransformToElement(diagramElement);
+    
+    // commented out -- does not work when Draggable isn´t loaded
+    // this.global = this.center.matrixTransform(transform);
 
     for (let connector of this.connectors) {
       connector.updateHandle(this);
     }
-  }}
+  }
+}
 
 
 //
@@ -479,10 +539,11 @@ class ETHDevice {
     for (let inoutput of this.inoutputs) {
       inoutput.update();
     }
-  }}
+  }
+}
 
 
-//
+
 // DIAGRAM
 // ===========================================================================
 class Diagram {
@@ -509,10 +570,11 @@ class Diagram {
       trigger: svg,
       onDrag: this.dragTarget,
       onDragEnd: this.stopDragging,
-      onPress: this.prepareTarget });
+      onPress: this.prepareTarget
+    });
 
   }
-  
+
   stopDragging() {
     this.target.onDragEnd && this.target.onDragEnd();
   }
@@ -534,8 +596,8 @@ class Diagram {
     switch (dragType) {
       case "diagram":
         this.target = this;
-		//let device = new ETHDeviceView("BTech Switch", 4, null);
-		//device.add(4);
+        //let device = new ETHDeviceView("BTech Switch", 4, null);
+        //device.add(4);
         break;
 
       case "shape":
@@ -552,7 +614,7 @@ class Diagram {
       case "connector":
         this.target = connectorLookup[id];
         break;
-	}
+    }
 
   }
 
@@ -560,11 +622,13 @@ class Diagram {
 
     TweenLite.set(this.target.dragElement, {
       x: `+=${this.draggable.deltaX}`,
-      y: `+=${this.draggable.deltaY}` });
+      y: `+=${this.draggable.deltaY}`
+    });
 
 
     this.target.onDrag && this.target.onDrag();
-  }}
+  }
+}
 
 
 //
@@ -593,4 +657,5 @@ frag.appendChild(document.querySelector(".connector"));
 const connectorElement = frag.querySelector(".connector");
 const connectorLayer = document.querySelector("#connections-layer");
 
-const diagram = new Diagram();
+document.addEventListener('mousedown', Drag.dragNode);
+// const diagram = new Diagram();
