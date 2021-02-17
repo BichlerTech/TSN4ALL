@@ -60,9 +60,13 @@ class ETHDeviceView {
 	}
   
 	add() {
-		var rootg = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		var rootg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         rootg.setAttribute('class','node-container');
+        rootg.setAttribute('width', '300');
 		var root=document.getElementById("node-layer");
+    root.setAttribute('x', '30');
+    root.setAttribute('y', '30');
+    root.setAttribute('width', '300');
 		root.appendChild(rootg);
 		
 		shapeElements.push(rootg);
@@ -70,38 +74,27 @@ class ETHDeviceView {
 		// create node header
 		var header = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		header.setAttribute('class','node-background');
-		header.setAttribute('width','124');
+		header.setAttribute('width','200');
+    header.setAttribute('x', '50')
 		header.setAttribute('height', (this.ports - 1)*25 + 78);
-		header.setAttribute('rx','6');
-		header.setAttribute('ry','6');
 		rootg.appendChild(header);
 		
 		var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 		g.setAttribute('class','node-header');
+    g.setAttribute('width', '200');
 		rootg.appendChild(g);
 		
 		var irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','header-round-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height','40');
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','2');
-		irect.setAttribute('rx','4');
-		irect.setAttribute('ry','4');
-		g.appendChild(irect);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		irect.setAttribute('class','header-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height','36');
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','6');
+		irect.setAttribute('width','200');
+    irect.setAttribute('height', '40');
+		irect.setAttribute('x','50');
 		g.appendChild(irect);
 		
 		var itext = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		itext.setAttribute('class','header-title');
-		itext.setAttribute('x','62');
-		itext.setAttribute('y','30');
+		itext.setAttribute('x','150');
+		itext.setAttribute('y','25');
 		itext.innerHTML = this.name;
 		g.appendChild(itext);
 		
@@ -111,9 +104,9 @@ class ETHDeviceView {
 		
 		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		irect.setAttribute('class','content-round-rect');
-		irect.setAttribute('width','120');
+		irect.setAttribute('width','100');
 		irect.setAttribute('height', (this.ports - 1)*25 + 32);
-		irect.setAttribute('x','2');
+		irect.setAttribute('x','150');
 		irect.setAttribute('y','44');
 		irect.setAttribute('rx','4');
 		irect.setAttribute('ry','4');
@@ -121,9 +114,9 @@ class ETHDeviceView {
 		
 		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		irect.setAttribute('class','content-rect');
-		irect.setAttribute('width','120');
+		irect.setAttribute('width','100');
 		irect.setAttribute('height',(this.ports - 1)*25 + 27);
-		irect.setAttribute('x','2');
+		irect.setAttribute('x','150');
 		irect.setAttribute('y','44');
 		g.appendChild(irect);
 		
@@ -155,33 +148,48 @@ class ETHDeviceView {
 		
 		var oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 		oport.setAttribute('class', 'port-outer');
-		oport.setAttribute('cx', '109');
+		oport.setAttribute('cx', '250');
 		oport.setAttribute('cy', '10');
 		oport.setAttribute('r', '7.5');	
 		innerinput.appendChild(oport);
 		
 		oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 		oport.setAttribute('class', 'port-inner');
-		oport.setAttribute('cx', '109');
+		oport.setAttribute('cx', '250');
 		oport.setAttribute('cy', '10');
 		oport.setAttribute('r', '5');	
 		innerinput.appendChild(oport);
 		
-		oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		var oport = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 		oport.setAttribute('class', 'port-scrim');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '7.5');
+    oport.setAttribute('points', '250,0 260,10 250,20');
 		oport.setAttribute('data-clickable', 'false');
 		oport.setAttribute('data-drag', 'port_5:port');
 		innerinput.appendChild(oport);
 		
-		var innertext = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		innertext.setAttribute('class', 'port-label');
-		innertext.setAttribute('x', '96');
-		innertext.setAttribute('y', '14');
-		innertext.innerHTML = "ETH-Port " + index;
-		input.appendChild(innertext);
+		var outputText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+		outputText.setAttribute('class', 'port-label');
+		outputText.setAttribute('x', '240');
+		outputText.setAttribute('y', '14');
+		outputText.innerHTML = "ETH-OUT " + index;
+		innerinput.appendChild(outputText);
+
+    var iport = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+		iport.setAttribute('class', 'port-scrim_input');
+    iport.setAttribute('points', '50,0 50,20 40,20 45,10 40,0');
+		iport.setAttribute('data-clickable', 'false');
+		iport.setAttribute('data-drag', 'port_5:port');
+		innerinput.appendChild(iport);
+		
+		var inputText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+		inputText.setAttribute('class', 'port-label');
+		inputText.setAttribute('x', '115');
+		inputText.setAttribute('y', '14');
+		inputText.innerHTML = "ETH-IN " + index;
+		input.appendChild(inputText);
+
+
+    
 	}
 }
 
