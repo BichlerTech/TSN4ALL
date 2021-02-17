@@ -42,22 +42,11 @@ body {
 }
 
 .node-background {
-  fill: white;
+  fill: #1a1c1d;
 }
 
-.node-header, .port-scrim {
-  fill: rgb(32, 147, 49);
-
-}
-.node-header:hover, .port-scrim:hover{
-  fill: rgb(12, 227, 44);
-}
-
-.port-scrim_input{
-  fill:rgb(135, 2, 2);
-}
-.port-scrim_input:hover{
-  fill:rgb(240, 0, 0);
+.node-header {
+  fill: #426D92;
 }
 .node-header .header-title {
   font-size: 16px;
@@ -66,11 +55,15 @@ body {
 }
 
 .node-content {
-  fill: white;
+  fill: #3C3C3C;
 }
 
 .port {
   cursor: pointer;
+}
+
+.port-scrim {
+  fill: transparent;
 }
 
 .port-outer {
@@ -83,7 +76,7 @@ body {
 
 .port-label {
   font-size: 12px;
-  fill: #202020;
+  fill: #fff;
 }
 
 .input-field .port-label {
