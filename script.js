@@ -2,6 +2,16 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
   return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 
+var connectionType = "physical";
+
+function setPhysical() {
+	connectionType = "physical";
+}
+
+function setLogicall() {
+	connectionType = "logical";
+}
+
 function save() {
 	var devices=document.getElementById("node-layer");
 	alert(devices.innerHTML);
