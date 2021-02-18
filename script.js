@@ -8,7 +8,7 @@ function setPhysical() {
 	connectionType = "physical";
 }
 
-function setLogicall() {
+function setLogical() {
 	connectionType = "logical";
 }
 
