@@ -206,8 +206,15 @@ class Connector {
     this.dragType = "connector";
     this.isSelected = false;
     this.element = connectorElement.cloneNode(true);
-    this.path = this.element.querySelector(".connector-path");
-    this.pathOutline = this.element.querySelector(".connector-path-outline");
+	if(connectionType == "physical") {
+		this.path = this.element.querySelector(".connector-path");
+		this.pathOutline = this.element.querySelector(".connector-path-outline");
+	}
+	else {
+		this.path = this.element.querySelector(".connector-path-logical");
+		this.pathOutline = this.element.querySelector(".connector-path-outline-logical");
+	}
+    
     this.inputHandle = this.element.querySelector(".input-handle");
     this.inoutputHandle = this.element.querySelector(".inoutput-handle");
   }
