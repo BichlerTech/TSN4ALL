@@ -14,13 +14,11 @@
 };
 
 </style>
-<script src="../W3.CSS-Dateien/request.js" type="text/javascript"></script>
-<script src="../W3.CSS-Dateien/script.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-left" style="width: 190px; display: block;" id="mySidebar">
   <div class="w3-bar w3-dark-grey">
-  <span class="w3-bar-item w3-padding-16">dataHUB nano</span>
+  <span class="w3-bar-item w3-padding-16">TSN4All</span>
   <button onclick="w3_close()" class="w3-bar-item w3-button w3-right w3-padding-16" title="close Sidebar">×</button>
   </div>
   <div class="w3-bar-block">
@@ -39,7 +37,7 @@
 
 <div id="main" style="margin-left: 190px; margin-right: 200px;">
 <span title="open Sidebar" style="display:none; color: white;" id="openNav" class="w3-button w3-transparent w3-display-topleft w3-xlarge" onclick="w3_open()">&#9776;</span>
-<div id="main_graphics" style = "height:100%; display: block">
+<div id="main_graphics" style = "height:100%; display: block" overflow="auto">
 <svg id="svg" style="width:100%; height:100%;">
 <defs>
     <!-- arrowhead marker definition -->
@@ -83,10 +81,14 @@ result
   <button id="params" class="w3-bar-item w3-button" onclick="switch2Parameter();">Parameter</button>
   <button id="result" class="w3-bar-item w3-button" onclick="switch2Result();">Result</button>
 </div>
+<span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topleft w3-xlarge" onclick="w3_openProperties()">&#9776;</span>
 </div>
-<div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-right" style="width: 250px; display: block; right: 0px;">
+<div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-right" style="width: 250px; display: block; right: 0px;" id="myProperties">
 <div id="Properties">
-properties
+<div class="w3-bar w3-dark-grey">
+  <span class="w3-bar-item w3-padding-16">properties</span>
+  <button onclick="w3_closeProperties()" class="w3-bar-item w3-button w3-right w3-padding-16" title="close properties">×</button>
+  </div>
 </div>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js'></script>

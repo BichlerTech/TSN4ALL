@@ -755,3 +755,9 @@ function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
   document.getElementById("openNav").style.display = "inline-block";
 }
+
+function w3_closeProperties() {
+ // document.getElementById("main").style.marginLeft = "0";
+  document.getElementById("myProperties").style.display = "none";
+//  document.getElementById("openNav").style.display = "inline-block";
+}
