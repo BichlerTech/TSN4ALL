@@ -1,6 +1,6 @@
 body {
   overflow: hidden;
-  background: #1a1a1a;
+  background: #CCCCCC;
 }
 
 #main {
@@ -109,12 +109,12 @@ body {
 
 .connector-path-outline {
   stroke: #333;
-  stroke-width: 4;
+  stroke-width: 0;
   fill: none;
 }
 
 .connector-path-outline-logical {
   stroke: #333;
-  stroke-width: 4;
+  stroke-width: 0;
   fill: none;
 }

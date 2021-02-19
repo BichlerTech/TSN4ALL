@@ -13,15 +13,27 @@ function setLogical() {
 }
 
 function save() {
-	var devices=document.getElementById("node-layer");
+	var devices=document.getElementById("diagram");
 	alert(devices.innerHTML);
-	var connections=document.getElementById("connections-layer");
-	alert(connections.innerHTML);
+	//var connections=document.getElementById("connections-layer");
+	//alert(connections.innerHTML);
 }
 
-function load(devices) {
-	var devices=document.getElementById("node-layer");
-	devices.innerx
+function invert(me) {
+	if(me.getAttribute("marker-start") != "") {
+		me.setAttribute("marker-start", "");
+		me.setAttribute("marker-end", "url(#arrow)");
+	} else {
+		me.setAttribute("marker-start", "url(#arrow)");
+		me.setAttribute("marker-end", "");
+	}
+}
+
+function load() {
+	var devices = document.getElementById("text");
+	var svg=document.getElementById("diagram");
+	svg.innerHTML  = devices.value;
+	init();
 }
 
 function switch2Graphics() {
@@ -52,6 +64,15 @@ function switch2Result() {
 	document.getElementById('graphics').style.backgroundColor = 'black';
 	document.getElementById('params').style.backgroundColor = 'black';
 	document.getElementById('result').style.backgroundColor = '#1a1a1a';
+}
+
+class Properties {
+	constructor() {
+	}
+	
+	addConnector(connector) {
+		document.getElementById("Properties").innerHTML = connector.connectonName;
+	}
 }
 
 // add a new EthDevice
@@ -190,7 +211,7 @@ class ETHDeviceView {
 		innertext.setAttribute('class', 'port-label');
 		innertext.setAttribute('x', '96');
 		innertext.setAttribute('y', '14');
-		innertext.innerHTML = "ETH-Port " + index;
+		innertext.innerHTML = "Port " + index;
 		input.appendChild(innertext);
 	}
 }
@@ -200,12 +221,17 @@ class ETHDeviceView {
 // ===========================================================================
 class Connector {
 
-  constructor() {
+  constructor(connectionType) {
 
     this.id = `connector_${++nextUid}`;
     this.dragType = "connector";
     this.isSelected = false;
     this.element = connectorElement.cloneNode(true);
+	this.connectionType = connectionType;
+	if(connectionType == "physical")
+		this.connectonName = `connector_${nextUid}`;
+	else
+		this.connectonName = `Stream_${nextUid}`;
 	if(connectionType == "physical") {
 		this.path = this.element.querySelector(".connector-path");
 		this.pathOutline = this.element.querySelector(".connector-path-outline");
@@ -217,6 +243,7 @@ class Connector {
     
     this.inputHandle = this.element.querySelector(".input-handle");
     this.inoutputHandle = this.element.querySelector(".inoutput-handle");
+	this.tsnProperties = new TSNProperties();
   }
 
   init(port) {
@@ -255,24 +282,102 @@ class Connector {
     const x4 = this.inoutputHandle._gsTransform.x;
     const y4 = this.inoutputHandle._gsTransform.y;
 
-    const dx = Math.abs(x1 - x4) * bezierWeight;
+	var p0x = 0;
+	var p0y = 0;
+
+	var p1x = 0;
+	var p1y = 0;
+	
+	var p2x = 0;
+	var p2y = 0;
+	
+	var p3x = 0;
+	var p3y = 0;
+	
+	var p4x = 0;
+	var p4y = 0;
+	
+	if(x1 < x4) {
+		//from right to left
+		p0x = x1;
+		p0y = y1;
+		
+		p1x = x1 + (x4 - x1)/2;
+		p1y = y1;
+
+		p2x = x4 - (x4 - x1)/2;
+		p2y = y4 + 10;
+
+		p3x = x4;
+		p3y = y4 + 10;
+		
+		p4x = x4;
+		p4y = y4;
+	} else {
+		//from left to right
+		p0x = x1;
+		p0y = y1;
+		
+		p1x = x1;
+		p1y = y1 + 10;
+
+		p2x = x4 - (x4 - x1)/2;
+		p2y = y1 + 10;
+
+		p3x = x4 - (x4 - x1)/2;
+		p3y = y4;
+		
+		p4x = x4;
+		p4y = y4;
+	}
+	
+//	const data = `M${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
+	const data = `${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
+
+ //   this.path.setAttribute("d", data);
+ //   this.pathOutline.setAttribute("d", data);
+	this.path.setAttribute("points", data);
+    this.pathOutline.setAttribute("points", data);
+  }
+  
+  updatePathLogical() {
+
+    const x1 = this.inputHandle._gsTransform.x;
+    const y1 = this.inputHandle._gsTransform.y;
+
+    const x4 = this.inoutputHandle._gsTransform.x;
+    const y4 = this.inoutputHandle._gsTransform.y;
+
+    var dx = 50;//Math.abs(x1 - x4) * bezierWeight;
+	
+	if(dx > 70)
+		dx = 70;
+	
+	var x = 0;
+	
+	// test rightmost point
+	x1 > x4? x = x1 : x = x4;
 
     const p1x = x1;
     const p1y = y1;
 
-    const p2x = x1 - dx;
+	const p2x = x + dx;
     const p2y = y1;
 
-    const p4x = x4;
+ //	const p3x = x1 - dx;
+	const p3x = x + dx;
+ //   const p3x = x4 + dx;
+    const p3y = y4;
+	
+	const p4x = x4;// + 50;
     const p4y = y4;
 
-    const p3x = x4 + dx;
-    const p3y = y4;
+    const data = `${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
 
-    const data = `M${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
-
-    this.path.setAttribute("d", data);
-    this.pathOutline.setAttribute("d", data);
+  //  this.path.setAttribute("d", data);
+  //  this.pathOutline.setAttribute("d", data);
+	this.path.setAttribute("points", data);
+    this.pathOutline.setAttribute("points", data);
   }
 
   updateHandle(port) {
@@ -292,7 +397,10 @@ class Connector {
 
     }
 
-    this.updatePath();
+	if(this.connectionType == "physical")
+		this.updatePath();
+	else
+		this.updatePathLogical();
   }
 
   placeHandle() {
@@ -337,6 +445,7 @@ class Connector {
       this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
 
       hitPort.addConnector(this);
+	  properties.addConnector(this);
       this.updateHandle(hitPort);
 
     } else {
@@ -372,7 +481,10 @@ class Connector {
   }
 
   onDrag() {
-    this.updatePath();
+    if(this.connectionType == "physical")
+		this.updatePath();
+	else
+		this.updatePathLogical();
   }
 
   onDragEnd() {
@@ -420,7 +532,7 @@ class NodePort {
       connector = connectorPool.pop();
       connectorLookup[connector.id] = connector;
     } else {
-      connector = new Connector();
+      connector = new Connector(connectionType);
     }
 
     connector.init(this);
@@ -451,6 +563,12 @@ class NodePort {
     }
   }}
 
+class TSNProperties {
+	constructor() {
+		this.vLan = "";
+		this.streamId = "";
+	}
+}
 
 //
 // NODE SHAPE
@@ -591,23 +709,49 @@ let nextUid = 0;
 
 const bezierWeight = 1.0;
 
-const svg = document.querySelector("#svg");
-const diagramElement = document.querySelector("#diagram");
-
 const shapeLookup = {};
 const portLookup = {};
 const connectorLookup = {};
 
-const ports = [];
+const ports = []; 
 const shapes = [];
 const connectorPool = [];
 
-const dragProxy = document.querySelector("#drag-proxy");
-shapeElements = Array.from(document.querySelectorAll(".node-container"));
+var svg;
+var diagramElement;
+var dragProxy;
+var frag;
+var connectorElement;
+var connectorLayer;
+var diagram;
 
-const frag = document.createDocumentFragment();
+frag = document.createDocumentFragment();
 frag.appendChild(document.querySelector(".connector"));
-const connectorElement = frag.querySelector(".connector");
-const connectorLayer = document.querySelector("#connections-layer");
+connectorElement = frag.querySelector(".connector");
+	
+function init() {
+	svg = document.querySelector("#svg");
+	diagramElement = document.querySelector("#diagram");
+	dragProxy = document.querySelector("#drag-proxy");
+	shapeElements = Array.from(document.querySelectorAll(".node-container"));
 
-const diagram = new Diagram();
+	
+	connectorLayer = document.querySelector("#connections-layer");
+	diagram = new Diagram();
+}
+
+init();
+
+const properties = new Properties();
+
+function w3_open() {
+  document.getElementById("main").style.marginLeft = "190px";
+  document.getElementById("mySidebar").style.width = "190px";
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("openNav").style.display = "none";
+}
+function w3_close() {
+  document.getElementById("main").style.marginLeft = "0";
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("openNav").style.display = "inline-block";
+}

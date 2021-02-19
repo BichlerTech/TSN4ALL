@@ -30,15 +30,25 @@
   <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X4', 4, null).add();">ETH X4</a>
   <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X5', 5, null).add();">ETH X5</a>
   <a class="w3-bar-item w3-button" href="javascript:save();">Export</a>
+  <a class="w3-bar-item w3-button" href="javascript:load();">Load</a>
   <a class="w3-bar-item w3-button" href="javascript:setPhysical();">physical connection</a>
   <a class="w3-bar-item w3-button" href="javascript:setLogical();">logical connection</a>
   </div>
+  <input id="text" type="text" value=""></input>
 </div>
 
-<div id="main" style="margin-left: 190px;">
+<div id="main" style="margin-left: 190px; margin-right: 200px;">
 <span title="open Sidebar" style="display:none; color: white;" id="openNav" class="w3-button w3-transparent w3-display-topleft w3-xlarge" onclick="w3_open()">&#9776;</span>
 <div id="main_graphics" style = "height:100%; display: block">
-<svg id="svg" style="width:100%; height:100%;">         
+<svg id="svg" style="width:100%; height:100%;">
+<defs>
+    <!-- arrowhead marker definition -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="20" refY="5"
+        markerWidth="6" markerHeight="6"
+        orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
   
   <g id="diagram" data-drag="diagram:diagram" data-drag-type="diagram">     
     <g id="node-layer">      
@@ -46,19 +56,20 @@
 
     <g id="connections-layer"></g>
 
-    <g class="connector">
+     
+  </g>
+  <g class="connector">
 
-      <path class="connector-path-outline" />
-	  <path class="connector-path-outline-logical" />
-      <path class="connector-path" />
-	  <path class="connector-path-logical" />
+      <polyline class="connector-path-outline" />
+	  <polyline class="connector-path-outline-logical"/>
+      <polyline class="connector-path" />
+	  <polyline class="connector-path-logical" marker-start="url(#arrow)" onclick="invert(this)"/>
 
       <circle class="connector-handle input-handle" cx="0" cy="0" r="4" />
       <circle class="connector-handle inoutput-handle" cx="0" cy="0" r="4" />
     </g>
     
-    <circle id="drag-proxy" cx="0" cy="0" r="1" fill="none" />    
-  </g>
+    <circle id="drag-proxy" cx="0" cy="0" r="1" fill="none" />   
 </svg>
 </div>
 <div id="main_parameter" style = "height:100%; display: none;">
@@ -73,9 +84,14 @@ result
   <button id="result" class="w3-bar-item w3-button" onclick="switch2Result();">Result</button>
 </div>
 </div>
+<div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-right" style="width: 250px; display: block; right: 0px;">
+<div id="Properties">
+properties
+</div>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script><script  src="./script.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script>
+<script  src="./script.js"></script>
 
 </body>
 </html>
