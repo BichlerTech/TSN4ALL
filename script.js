@@ -19,6 +19,9 @@ function save() {
 	//alert(connections.innerHTML);
 }
 
+/*
+ invert direction of a stream connection
+*/
 function invert(me) {
 	if(me.getAttribute("marker-start") != "") {
 		me.setAttribute("marker-start", "");
@@ -36,56 +39,58 @@ function load() {
 	init();
 }
 
-function switch2Graphics() {
-	document.getElementById('main_graphics').style.display = 'block';
-	document.getElementById('main_parameter').style.display = 'none';
+function switch2Physical() {
+	//document.getElementById('main_graphics').style.display = 'block';
+	//document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_result').style.display = 'none';
+	setPhysical();
 	
-	document.getElementById('graphics').style.backgroundColor = '#1a1a1a';
+	document.getElementById('graphics').style.backgroundColor = '#616161 ';
 	document.getElementById('params').style.backgroundColor = 'black';
 	document.getElementById('result').style.backgroundColor = 'black';
 }
 
-function switch2Parameter() {
-	document.getElementById('main_graphics').style.display = 'none';
-	document.getElementById('main_parameter').style.display = 'block';
+function switch2Logical() {
+	setLogical();
+	//document.getElementById('main_graphics').style.display = 'none';
+	//document.getElementById('main_parameter').style.display = 'block';
 	document.getElementById('main_result').style.display = 'none';
 	
 	document.getElementById('graphics').style.backgroundColor = 'black';
-	document.getElementById('params').style.backgroundColor = '#1a1a1a';
+	document.getElementById('params').style.backgroundColor = '#616161 ';
 	document.getElementById('result').style.backgroundColor = 'black';
 }
 
 function switch2Result() {
-	document.getElementById('main_graphics').style.display = 'none';
-	document.getElementById('main_parameter').style.display = 'none';
-	document.getElementById('main_result').style.display = 'block';
+	//document.getElementById('main_graphics').style.display = 'none';
+	//document.getElementById('main_parameter').style.display = 'none';
+	//document.getElementById('main_result').style.display = 'block';
 	
-	document.getElementById('graphics').style.backgroundColor = 'black';
-	document.getElementById('params').style.backgroundColor = 'black';
-	document.getElementById('result').style.backgroundColor = '#1a1a1a';
-}
-
-class Properties {
-	constructor() {
-	}
-	
-	addConnector(connector) {
-		document.getElementById("Properties").innerHTML = connector.connectonName;
-	}
+	//document.getElementById('graphics').style.backgroundColor = 'black';
+	//document.getElementById('params').style.backgroundColor = 'black';
+	//document.getElementById('result').style.backgroundColor = '#616161 ';
 }
 
 // add a new EthDevice
 class ETHDeviceView {
+	/*
 	constructor(name, ports, args) {
 		this.id = `ethdevview_${++nextUid}`;
 		this.name = name;
 		this.ports = ports;
 		this.arguments = args;
+	}*/
+	
+	constructor(device) {
+		this.id = `ethdevview_${++nextUid}`;
+		this.name = device.name;
+		this.portcount = device.portcount;
+		this.ports = device.ports;
+		this.device = device;
 	}
 	
 	addShape(element) {
-	  const shape = new ETHDevice(element, 50, 50);
+	  const shape = new ETHDevice(element, 50, 50, this.device);
 	  shapeLookup[shape.id] = shape;
       shapes.push(shape);
 	}
@@ -102,7 +107,7 @@ class ETHDeviceView {
 		var header = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		header.setAttribute('class','node-background');
 		header.setAttribute('width','124');
-		header.setAttribute('height', (this.ports - 1)*25 + 78);
+		header.setAttribute('height', (this.portcount - 1)*25 + 78);
 		header.setAttribute('rx','6');
 		header.setAttribute('ry','6');
 		rootg.appendChild(header);
@@ -143,7 +148,7 @@ class ETHDeviceView {
 		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		irect.setAttribute('class','content-round-rect');
 		irect.setAttribute('width','120');
-		irect.setAttribute('height', (this.ports - 1)*25 + 32);
+		irect.setAttribute('height', (this.portcount - 1)*25 + 32);
 		irect.setAttribute('x','2');
 		irect.setAttribute('y','44');
 		irect.setAttribute('rx','4');
@@ -153,7 +158,7 @@ class ETHDeviceView {
 		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		irect.setAttribute('class','content-rect');
 		irect.setAttribute('width','120');
-		irect.setAttribute('height',(this.ports - 1)*25 + 27);
+		irect.setAttribute('height',(this.portcount - 1)*25 + 27);
 		irect.setAttribute('x','2');
 		irect.setAttribute('y','44');
 		g.appendChild(irect);
@@ -163,18 +168,18 @@ class ETHDeviceView {
 		this.addShape(rootg);
 	}
 	
-	addIOputs(root, ) {
+	addIOputs(root) {
 		var inputs = document.createElementNS("http://www.w3.org/2000/svg", "g");
 		inputs.setAttribute('class', 'inoutputs');
 		root.appendChild(inputs);
 		var i;
 		
-		for (i = 1; i <= this.ports; i++) { 
-			this.addIO(inputs, i);
+		for (i = 1; i <= this.portcount; i++) { 
+			this.addIO(inputs, this.ports[i-1], i);
 		}
 	}
 	
-	addIO(ios, index) {
+	addIO(ios, port, index) {
 		var input = document.createElementNS("http://www.w3.org/2000/svg", "g");
 		input.setAttribute('class', 'inoutput-field');
 		input.setAttribute('transform', 'translate(0, ' + (25 + 25*index) + ')');
@@ -211,7 +216,7 @@ class ETHDeviceView {
 		innertext.setAttribute('class', 'port-label');
 		innertext.setAttribute('x', '96');
 		innertext.setAttribute('y', '14');
-		innertext.innerHTML = "Port " + index;
+		innertext.innerHTML = port.name;
 		input.appendChild(innertext);
 	}
 }
@@ -231,7 +236,7 @@ class Connector {
 	if(connectionType == "physical")
 		this.connectonName = `connector_${nextUid}`;
 	else
-		this.connectonName = `Stream_${nextUid}`;
+		this.connectonName = `Stream_${++streamUid}`;
 	if(connectionType == "physical") {
 		this.path = this.element.querySelector(".connector-path");
 		this.pathOutline = this.element.querySelector(".connector-path-outline");
@@ -575,10 +580,11 @@ class TSNProperties {
 // =========================================================================== 
 class ETHDevice {
 
-  constructor(element, x, y) {
+  constructor(element, x, y, device) {
 
     this.id = `shape_${++nextUid}`;
     this.dragType = "shape";
+	this.device = device;
 
     element.setAttribute("data-drag", `${this.id}:shape`);
 
@@ -614,7 +620,8 @@ class ETHDevice {
     for (let inoutput of this.inoutputs) {
       inoutput.update();
     }
-  }}
+  }
+}
 
 
 //
@@ -675,6 +682,8 @@ class Diagram {
 
       case "shape":
         this.target = shapeLookup[id];
+		this.target.device.type = this.target.device.name;
+		properties.setDeviceProperties(this.target.device);
         break;
 
       case "port":
@@ -706,6 +715,7 @@ class Diagram {
 // APP
 // ===========================================================================
 let nextUid = 0;
+let streamUid = 0;
 
 const bezierWeight = 1.0;
 
@@ -742,7 +752,7 @@ function init() {
 
 init();
 
-const properties = new Properties();
+//const properties = new Properties();
 
 function w3_open() {
   document.getElementById("main").style.marginLeft = "190px";
@@ -759,5 +769,11 @@ function w3_close() {
 function w3_closeProperties() {
  // document.getElementById("main").style.marginLeft = "0";
   document.getElementById("myProperties").style.display = "none";
-//  document.getElementById("openNav").style.display = "inline-block";
+  document.getElementById("openProps").style.display = "block";
+}
+
+function w3_openProperties() {
+ // document.getElementById("main").style.marginLeft = "0";
+  document.getElementById("myProperties").style.display = "block";
+  document.getElementById("openProps").style.display = "none";
 }

@@ -12,8 +12,8 @@
         font-size:16px;
     }
 };
-
 </style>
+<script  src="./installedDevs/menuItems.js"></script>
 </head>
 <body>
 <div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-left" style="width: 190px; display: block;" id="mySidebar">
@@ -21,18 +21,12 @@
   <span class="w3-bar-item w3-padding-16">TSN4All</span>
   <button onclick="w3_close()" class="w3-bar-item w3-button w3-right w3-padding-16" title="close Sidebar">×</button>
   </div>
-  <div class="w3-bar-block">
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X1', 1, null).add();">ETH X1</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X2', 2, null).add();">ETH X2</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X3', 3, null).add();">ETH X3</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X4', 4, null).add();">ETH X4</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X5', 5, null).add();">ETH X5</a>
+  <div id="menu" class="w3-bar-block">
   <a class="w3-bar-item w3-button" href="javascript:save();">Export</a>
   <a class="w3-bar-item w3-button" href="javascript:load();">Load</a>
-  <a class="w3-bar-item w3-button" href="javascript:setPhysical();">physical connection</a>
-  <a class="w3-bar-item w3-button" href="javascript:setLogical();">logical connection</a>
   </div>
-  <input id="text" type="text" value=""></input>
+  <input type='file' onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))' />
+<p id="contents"></p>
 </div>
 
 <div id="main" style="margin-left: 190px; margin-right: 200px;">
@@ -40,6 +34,14 @@
 <div id="main_graphics" style = "height:100%; display: block" overflow="auto">
 <svg id="svg" style="width:100%; height:100%;">
 <defs>
+      <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+        <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+        <rect width="80" height="80" fill="url(#smallGrid)"/>
+        <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" stroke-width="1"/>
+      </pattern>
+    </defs>
     <!-- arrowhead marker definition -->
     <marker id="arrow" viewBox="0 0 10 10" refX="20" refY="5"
         markerWidth="6" markerHeight="6"
@@ -48,7 +50,7 @@
     </marker>
   </defs>
   
-  <g id="diagram" data-drag="diagram:diagram" data-drag-type="diagram">     
+  <g id="diagram" data-drag="diagram:diagram" data-drag-type="diagram" fill="url(#grid)">     
     <g id="node-layer">      
     </g>
 
@@ -77,23 +79,26 @@ paramter
 result
 </div>
 <div class="w3-bar w3-black">
-  <button id="graphics" class="w3-bar-item w3-button" style="background-color: #1a1a1a;" onclick="switch2Graphics();">Graphics</button>
-  <button id="params" class="w3-bar-item w3-button" onclick="switch2Parameter();">Parameter</button>
+  <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
+  <button id="params" class="w3-bar-item w3-button" onclick="switch2Logical();">logical</button>
   <button id="result" class="w3-bar-item w3-button" onclick="switch2Result();">Result</button>
 </div>
-<span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topleft w3-xlarge" onclick="w3_openProperties()">&#9776;</span>
 </div>
+<span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topright w3-xlarge" onclick="w3_openProperties()">&#9776;</span>
 <div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-right" style="width: 250px; display: block; right: 0px;" id="myProperties">
-<div id="Properties">
+<div id="Properties-main">
 <div class="w3-bar w3-dark-grey">
   <span class="w3-bar-item w3-padding-16">properties</span>
   <button onclick="w3_closeProperties()" class="w3-bar-item w3-button w3-right w3-padding-16" title="close properties">×</button>
+  </div>
+  <div id="properties">
   </div>
 </div>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script>
 <script  src="./script.js"></script>
-
+<script  src="./menu.js"></script>
+<script  src="./properties.js"></script>
 </body>
 </html>
