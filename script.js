@@ -13,29 +13,31 @@ function setLogical() {
 }
 
 function save() {
-	var devices=document.getElementById("diagram");
-	alert(devices.innerHTML);
+	var devices_=document.getElementById("diagram");
+	alert(devices_.innerHTML);
 	//var connections=document.getElementById("connections-layer");
 	//alert(connections.innerHTML);
 }
 
 /*
- invert direction of a stream connection
+* not used 
+* invert direction of a stream connection
 */
 function invert(me) {
+	/*
 	if(me.getAttribute("marker-start") != "") {
 		me.setAttribute("marker-start", "");
 		me.setAttribute("marker-end", "url(#arrow)");
 	} else {
 		me.setAttribute("marker-start", "url(#arrow)");
 		me.setAttribute("marker-end", "");
-	}
+	}*/
 }
 
 function load() {
-	var devices = document.getElementById("text");
+	var devices_ = document.getElementById("text");
 	var svg=document.getElementById("diagram");
-	svg.innerHTML  = devices.value;
+	svg.innerHTML  = devices_.value;
 	init();
 }
 
@@ -90,9 +92,9 @@ class ETHDeviceView {
 	}
 	
 	addShape(element) {
-	  const shape = new ETHDevice(element, 50, 50, this.device);
-	  shapeLookup[shape.id] = shape;
-      shapes.push(shape);
+	  const device_ = new ETHDevice(element, 50, 50, this.device);
+	  shapeLookup[device_.id] = device_;
+      devices.push(device_);
 	}
   
 	add() {
@@ -234,9 +236,17 @@ class Connector {
     this.element = connectorElement.cloneNode(true);
 	this.connectionType = connectionType;
 	if(connectionType == "physical")
+	{
 		this.connectonName = `connector_${nextUid}`;
-	else
+		connections[this.id] = this;
+	}
+	else {
 		this.connectonName = `Stream_${++streamUid}`;
+		streams[this.id] = this;
+	}
+	selectedStream = this;
+	this.Vlan = 5;
+	this.VlanShortCut = "BK";
 	if(connectionType == "physical") {
 		this.path = this.element.querySelector(".connector-path");
 		this.pathOutline = this.element.querySelector(".connector-path-outline");
@@ -249,6 +259,8 @@ class Connector {
     this.inputHandle = this.element.querySelector(".input-handle");
     this.inoutputHandle = this.element.querySelector(".inoutput-handle");
 	this.tsnProperties = new TSNProperties();
+	this.startelement = null;
+	this.endElement = null;
   }
 
   init(port) {
@@ -383,6 +395,7 @@ class Connector {
   //  this.pathOutline.setAttribute("d", data);
 	this.path.setAttribute("points", data);
     this.pathOutline.setAttribute("points", data);
+	this.path.setAttribute("id", this.id);
   }
 
   updateHandle(port) {
@@ -414,16 +427,16 @@ class Connector {
 
     let hitPort;
 
-    for (let shape of shapes) {
+    for (let device of devices) {
 
-      if (shape.element === skipShape) {
+      if (device.element === skipShape) {
         continue;
       }
 
-      if (Draggable.hitTest(this.dragElement, shape.element)) {
+      if (Draggable.hitTest(this.dragElement, device.element)) {
 
-     //   const ports = this.isInput ? shape.inoutputs : shape.inputs;
-		const ports = shape.inoutputs;
+     //   const ports = this.isInput ? device.inoutputs : device.inputs;
+		const ports = device.inoutputs;
 
         for (let port of ports) {
 
@@ -634,9 +647,9 @@ class Diagram {
     this.dragElement = this.element = diagramElement;
 
     shapeElements.forEach((element, i) => {
-      const shape = new ETHDevice(element, 50 + i * 250, 50);
-      shapeLookup[shape.id] = shape;
-      shapes.push(shape);
+      const device = new ETHDevice(element, 50 + i * 250, 50);
+      shapeLookup[device.id] = device;
+      devices.push(device);
     });
 
     this.target = null;
@@ -656,7 +669,9 @@ class Diagram {
   }
   
   stopDragging() {
-    this.target.onDragEnd && this.target.onDragEnd();
+    if(this.target != undefined) {
+      this.target.onDragEnd && this.target.onDragEnd();
+	}
   }
 
   prepareTarget(event) {
@@ -688,6 +703,7 @@ class Diagram {
 
       case "port":
         const port = portLookup[id];
+		console.log("create connector!");
         port.createConnector();
         this.target = port.lastConnector;
         this.dragType = this.target.dragType;
@@ -710,6 +726,37 @@ class Diagram {
     this.target.onDrag && this.target.onDrag();
   }}
 
+// models
+// ===========================================================================
+/* 
+* virtual/logical flows from one device to an other
+*/
+var streams = {};
+
+/*
+* physical connections
+*/
+var connections = {};
+
+/*
+* actual selected logical flow
+*/
+var selectedStream;
+
+/*
+* actual selected physical connection
+*/
+var selectedConnection;
+
+/*
+* all device models
+*/
+var devices = [];
+
+/*
+* actual selected device
+*/
+var selectedDevice;
 
 //
 // APP
@@ -724,7 +771,6 @@ const portLookup = {};
 const connectorLookup = {};
 
 const ports = []; 
-const shapes = [];
 const connectorPool = [];
 
 var svg;

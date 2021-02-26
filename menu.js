@@ -2,18 +2,18 @@ class Menu {
 	constructor() {
 	}
 	
-	createMenu(devices) {
+	createMenu(items) {
 		// get main menu element
 		var menu = document.getElementById("menu");
-		devices.forEach((device, i) => {
+		items.forEach((device, i) => {
 			this.createMenuItem(device, i);
 		});
 	}
 	
 	addMenuItems(devs) {
-		let devcount = devices.length;
+		let devcount = items.length;
 		devs.forEach((device, i) => {
-			devices.push(device);
+			items.push(device);
 			this.createMenuItem(device, devcount + i);
 		});
 	}
@@ -23,7 +23,7 @@ class Menu {
 		var menu = document.getElementById("menu");
 			
 		var a = document.createElement("a");
-		a.setAttribute("href", "javascript:new ETHDeviceView(devices[" + i + "]).add();");
+		a.setAttribute("href", "javascript:new ETHDeviceView(items[" + i + "]).add();");
 		a.classList.add("w3-bar-item");
 		a.classList.add("w3-button");
 		menu.appendChild(a);
@@ -68,4 +68,4 @@ function onChooseFile(event, onLoadFileHandler) {
 }
 
 const menu = new Menu();
-menu.createMenu(devices);
+menu.createMenu(items);

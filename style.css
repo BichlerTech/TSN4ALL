@@ -23,7 +23,7 @@ table.table-style-three {
 		cursor: pointer;
 	}
 	table.table-style-three tr:nth-child(even) td{
-		background-color: #F7CFCF;
+		background-color: #CCCCCC;
 	}
 	table.table-style-three td {
 		border-width: 1px;
@@ -78,6 +78,11 @@ table.table-style-three {
 .node-header {
   fill: #426D92;
 }
+
+.node-header :hover {
+	cursor: pointer;
+}
+
 .node-header .header-title {
   font-size: 16px;
   fill: #fff;
@@ -135,6 +140,10 @@ table.table-style-three {
   stroke: red;
   stroke-width: 2;
   fill: none;
+}
+
+.connector-path-logical:hover {
+	cursor: pointer;
 }
 
 .connector-path-outline {

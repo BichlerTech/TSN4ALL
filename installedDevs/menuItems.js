@@ -1,4 +1,4 @@
-var devices = [
+var items = [
 { "name": "dev_ethx1",
   "type": "dev_ethx1",
   "portcount": 1,
