@@ -136,6 +136,10 @@ table.table-style-three {
   fill: none;
 }
 
+.connector-path:hover {
+	cursor: pointer;
+}
+
 .connector-path-logical {
   stroke: red;
   stroke-width: 2;

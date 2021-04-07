@@ -5,6 +5,7 @@ var items = [
   "ports": [
   {
 	  "name": "port1",
+	  "id": 1,
 	  "property" : "irgendwas"
   }],
   "image" : "index.jpg"
@@ -15,9 +16,11 @@ var items = [
   "ports": [
   {
 	  "name": "port1",
+	  "id": 1,
 	  "property" : "irgendwas"
   },{
 	  "name": "port2",
+	  "id": 2,
 	  "property" : "irgendwas"
   }],
   "image" : "index.jpg"
@@ -28,12 +31,15 @@ var items = [
   "ports": [
   {
 	  "name": "port1",
+	  "id": 1,
 	  "property" : "irgendwas"
   },{
 	  "name": "port2",
+	  "id": 2,
 	  "property" : "irgendwas"
   },{
 	  "name": "port3",
+	  "id": 3,
 	  "property" : "irgendwas"
   }],
   "image" : "index.jpg"
@@ -44,15 +50,19 @@ var items = [
   "ports": [
   {
 	  "name": "port1",
+	  "id": 1,
 	  "property" : "irgendwas"
   },{
 	  "name": "port2",
+	  "id": 2,
 	  "property" : "irgendwas"
   },{
 	  "name": "port3",
+	  "id": 3,
 	  "property" : "irgendwas"
   },{
 	  "name": "port4",
+	  "id": 4,
 	  "property" : "irgendwas"
   }],
   "image" : "index.jpg"

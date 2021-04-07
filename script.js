@@ -14,7 +14,47 @@ function setLogical() {
 
 function save() {
 	var devices_=document.getElementById("diagram");
-	alert(devices_.innerHTML);
+	//alert(devices_.innerHTML);
+	let content = '<?xml version="1.0" encoding="UTF-8"?>\n';
+	content += '<TSNNetwork>\n';
+	content += '  <base category="netInfo">\n';
+	content += '    <hyperperiod>1000</hyperperiod>\n';
+	content += '    <granularity>10</granularity>\n';
+	content += '  </base>\n';
+	for (let device of devices) {
+	  content += '  <node category="switch"><br>\n';
+	  content += '    <name>' + device.actDeviceModel.name + '</name>\n';
+      content += '    <id>' + device.actDeviceModel.id + '</id>\n';
+	  content += '      <tsnPorts>\n';
+	  for(let port of device.actDeviceModel.ports) {
+		  content += '        <port>\n';
+		  content += '          <name>' + port.name + '</name>\n';
+		  content += '          <id>' + port.id + '</id>\n';
+		  content += '        </port>\n';
+	  }
+	  content += '      </tsnPorts>\n';
+	  content += '  </node>\n';
+    }
+	for (var key in streams) {
+		let devs = streams[key].inoutputPort.parentNode;
+		let devd = streams[key].inputPort.parentNode;
+		content += '  <edge category="flow">\n';
+		content += '    <sourceNodeId>' + devs.actDeviceModel.id + '</sourceNodeId>\n'; //					<!-- int: node id from source node where the flow is connected to -->
+		content += '    <destNodeId>' + devd.actDeviceModel.id + '</destNodeId>\n';
+		content += '    <id>' + streams[key].model.id + '</id>\n';
+		content += '    <deadline>850</deadline>\n';
+		content += '    <period>1000</period>\n';
+		content += '    <dataSize>50</dataSize>\n';
+		content += '    <vlanId>10</vlanId>\n';
+	//	alert("input: " + streams[key].inputPort.element.textContent + " id: " + streams[key].inputPort.parentNode.device.name);
+	//	alert("output: " + streams[key].inoutputPort.element.textContent + " id: " + streams[key].inoutputPort.parentNode.device.name);
+		content += '  </edge>\n';
+	}
+	
+	content += '</TSNNetwork>';
+	let result = document.getElementById('resultArea');
+	result.value = content;
+	console.log(content);
 	//var connections=document.getElementById("connections-layer");
 	//alert(connections.innerHTML);
 }
@@ -42,7 +82,7 @@ function load() {
 }
 
 function switch2Physical() {
-	//document.getElementById('main_graphics').style.display = 'block';
+	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_result').style.display = 'none';
 	setPhysical();
@@ -54,7 +94,7 @@ function switch2Physical() {
 
 function switch2Logical() {
 	setLogical();
-	//document.getElementById('main_graphics').style.display = 'none';
+	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'block';
 	document.getElementById('main_result').style.display = 'none';
 	
@@ -64,189 +104,44 @@ function switch2Logical() {
 }
 
 function switch2Result() {
-	//document.getElementById('main_graphics').style.display = 'none';
-	//document.getElementById('main_parameter').style.display = 'none';
-	//document.getElementById('main_result').style.display = 'block';
+	save();
+	document.getElementById('main_graphics').style.display = 'none';
+	document.getElementById('main_parameter').style.display = 'none';
+	document.getElementById('main_result').style.display = 'block';
 	
-	//document.getElementById('graphics').style.backgroundColor = 'black';
-	//document.getElementById('params').style.backgroundColor = 'black';
-	//document.getElementById('result').style.backgroundColor = '#616161 ';
-}
-
-// add a new EthDevice
-class ETHDeviceView {
-	/*
-	constructor(name, ports, args) {
-		this.id = `ethdevview_${++nextUid}`;
-		this.name = name;
-		this.ports = ports;
-		this.arguments = args;
-	}*/
-	
-	constructor(device) {
-		this.id = `ethdevview_${++nextUid}`;
-		this.name = device.name;
-		this.portcount = device.portcount;
-		this.ports = device.ports;
-		this.device = device;
-	}
-	
-	addShape(element) {
-	  const device_ = new ETHDevice(element, 50, 50, this.device);
-	  shapeLookup[device_.id] = device_;
-      devices.push(device_);
-	}
-  
-	add() {
-		var rootg = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        rootg.setAttribute('class','node-container');
-		var root=document.getElementById("node-layer");
-		root.appendChild(rootg);
-		
-		shapeElements.push(rootg);
-		
-		// create node header
-		var header = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		header.setAttribute('class','node-background');
-		header.setAttribute('width','124');
-		header.setAttribute('height', (this.portcount - 1)*25 + 78);
-		header.setAttribute('rx','6');
-		header.setAttribute('ry','6');
-		rootg.appendChild(header);
-		
-		var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		g.setAttribute('class','node-header');
-		rootg.appendChild(g);
-		
-		var irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','header-round-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height','40');
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','2');
-		irect.setAttribute('rx','4');
-		irect.setAttribute('ry','4');
-		g.appendChild(irect);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','header-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height','36');
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','6');
-		g.appendChild(irect);
-		
-		var itext = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		itext.setAttribute('class','header-title');
-		itext.setAttribute('x','62');
-		itext.setAttribute('y','30');
-		itext.innerHTML = this.name;
-		g.appendChild(itext);
-		
-		g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		g.setAttribute('class','node-content');
-		rootg.appendChild(g);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','content-round-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height', (this.portcount - 1)*25 + 32);
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','44');
-		irect.setAttribute('rx','4');
-		irect.setAttribute('ry','4');
-		g.appendChild(irect);
-		
-		irect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		irect.setAttribute('class','content-rect');
-		irect.setAttribute('width','120');
-		irect.setAttribute('height',(this.portcount - 1)*25 + 27);
-		irect.setAttribute('x','2');
-		irect.setAttribute('y','44');
-		g.appendChild(irect);
-		
-		this.addIOputs(g);
-		
-		this.addShape(rootg);
-	}
-	
-	addIOputs(root) {
-		var inputs = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		inputs.setAttribute('class', 'inoutputs');
-		root.appendChild(inputs);
-		var i;
-		
-		for (i = 1; i <= this.portcount; i++) { 
-			this.addIO(inputs, this.ports[i-1], i);
-		}
-	}
-	
-	addIO(ios, port, index) {
-		var input = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		input.setAttribute('class', 'inoutput-field');
-		input.setAttribute('transform', 'translate(0, ' + (25 + 25*index) + ')');
-		ios.appendChild(input);
-		var innerinput = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		innerinput.setAttribute('class', 'port');
-		innerinput.setAttribute('data-clickable', 'false');
-		input.appendChild(innerinput);
-		
-		var oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		oport.setAttribute('class', 'port-outer');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '7.5');	
-		innerinput.appendChild(oport);
-		
-		oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		oport.setAttribute('class', 'port-inner');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '5');	
-		innerinput.appendChild(oport);
-		
-		oport = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		oport.setAttribute('class', 'port-scrim');
-		oport.setAttribute('cx', '109');
-		oport.setAttribute('cy', '10');
-		oport.setAttribute('r', '7.5');
-		oport.setAttribute('data-clickable', 'false');
-		oport.setAttribute('data-drag', 'port_5:port');
-		innerinput.appendChild(oport);
-		
-		var innertext = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		innertext.setAttribute('class', 'port-label');
-		innertext.setAttribute('x', '96');
-		innertext.setAttribute('y', '14');
-		innertext.innerHTML = port.name;
-		input.appendChild(innertext);
-	}
+	document.getElementById('graphics').style.backgroundColor = 'black';
+	document.getElementById('params').style.backgroundColor = 'black';
+	document.getElementById('result').style.backgroundColor = '#616161 ';
 }
 
 //
 // CONNECTOR
 // ===========================================================================
-class Connector {
+class ConnectorController {
 
   constructor(connectionType) {
 
-    this.id = `connector_${++nextUid}`;
     this.dragType = "connector";
     this.isSelected = false;
-    this.element = connectorElement.cloneNode(true);
+    
 	this.connectionType = connectionType;
-	if(connectionType == "physical")
-	{
-		this.connectonName = `connector_${nextUid}`;
-		connections[this.id] = this;
+	if(connectionType == "physical") {
+		this.model = new PhysicalConnection();
+		this.element = connectorElement.cloneNode(true);
+		this.model.name = `Connector_${nextUid}`;
+		this.model.id = nextUid++;
+		connections[this.name] = this;
 	}
 	else {
-		this.connectonName = `Stream_${++streamUid}`;
-		streams[this.id] = this;
+		this.element = connectorStreamElement.cloneNode(true);
+		this.model = new StreamConnection();
+		this.model.name = `Stream_${streamUid}`;
+		this.model.id = streamUid++;
+		streams[this.model.name] = this;
 	}
 	selectedStream = this;
-	this.Vlan = 5;
-	this.VlanShortCut = "BK";
+	//this.Vlan = 5;
+	//this.VlanShortCut = "BK";
 	if(connectionType == "physical") {
 		this.path = this.element.querySelector(".connector-path");
 		this.pathOutline = this.element.querySelector(".connector-path-outline");
@@ -258,7 +153,7 @@ class Connector {
     
     this.inputHandle = this.element.querySelector(".input-handle");
     this.inoutputHandle = this.element.querySelector(".inoutput-handle");
-	this.tsnProperties = new TSNProperties();
+	//this.tsnProperties = new TSNProperties();
 	this.startelement = null;
 	this.endElement = null;
   }
@@ -286,9 +181,6 @@ class Connector {
     TweenLite.set([this.inputHandle, this.inoutputHandle], {
       x: port.global.x,
       y: port.global.y });
-
-
-
   }
 
   updatePath() {
@@ -347,14 +239,11 @@ class Connector {
 		p4x = x4;
 		p4y = y4;
 	}
-	
-//	const data = `M${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
-	const data = `${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
 
- //   this.path.setAttribute("d", data);
- //   this.pathOutline.setAttribute("d", data);
+	const data = `${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
 	this.path.setAttribute("points", data);
     this.pathOutline.setAttribute("points", data);
+	this.path.setAttribute("id", this.id);
   }
   
   updatePathLogical() {
@@ -365,7 +254,7 @@ class Connector {
     const x4 = this.inoutputHandle._gsTransform.x;
     const y4 = this.inoutputHandle._gsTransform.y;
 
-    var dx = 50;//Math.abs(x1 - x4) * bezierWeight;
+    var dx = 50;
 	
 	if(dx > 70)
 		dx = 70;
@@ -381,18 +270,13 @@ class Connector {
 	const p2x = x + dx;
     const p2y = y1;
 
- //	const p3x = x1 - dx;
 	const p3x = x + dx;
- //   const p3x = x4 + dx;
     const p3y = y4;
 	
-	const p4x = x4;// + 50;
+	const p4x = x4;
     const p4y = y4;
 
     const data = `${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
-
-  //  this.path.setAttribute("d", data);
-  //  this.pathOutline.setAttribute("d", data);
 	this.path.setAttribute("points", data);
     this.pathOutline.setAttribute("points", data);
 	this.path.setAttribute("id", this.id);
@@ -401,17 +285,22 @@ class Connector {
   updateHandle(port) {
 
     if (port === this.inputPort) {
-
-      TweenLite.set(this.inputHandle, {
-        x: port.global.x,
-        y: port.global.y });
+	//	this.inputHandle.setAttribute("x", port.global.x);
+	//	this.inputHandle.setAttribute("y", port.global.y);
+		
+		this.inputHandle.setAttribute("transform", "matrix(1, 0, 0, 1, " + port.global.x + ", " + port.global.y + ")");
+		this.inputHandle._gsTransform.x = port.global.x;
+		this.inputHandle._gsTransform.y = port.global.y;
 
 
     } else if (port === this.inoutputPort) {
-
-      TweenLite.set(this.inoutputHandle, {
-        x: port.global.x,
-        y: port.global.y });
+		this.inoutputHandle.setAttribute("transform", "matrix(1, 0, 0, 1, " + port.global.x + ", " + port.global.y + ")");
+		this.inoutputHandle._gsTransform.x = port.global.x;
+		this.inoutputHandle._gsTransform.y = port.global.y;
+		
+    //  TweenLite.set(this.inoutputHandle, {
+    //    x: port.global.x,
+    //    y: port.global.y });
 
     }
 
@@ -463,7 +352,7 @@ class Connector {
       this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
 
       hitPort.addConnector(this);
-	  properties.addConnector(this);
+	//  properties.addConnector(this);
       this.updateHandle(hitPort);
 
     } else {
@@ -550,7 +439,7 @@ class NodePort {
       connector = connectorPool.pop();
       connectorLookup[connector.id] = connector;
     } else {
-      connector = new Connector(connectionType);
+      connector = new ConnectorController(connectionType);
     }
 
     connector.init(this);
@@ -579,62 +468,16 @@ class NodePort {
     for (let connector of this.connectors) {
       connector.updateHandle(this);
     }
-  }}
-
+  }
+}
+  
+/*
 class TSNProperties {
 	constructor() {
 		this.vLan = "";
 		this.streamId = "";
 	}
-}
-
-//
-// NODE SHAPE
-// =========================================================================== 
-class ETHDevice {
-
-  constructor(element, x, y, device) {
-
-    this.id = `shape_${++nextUid}`;
-    this.dragType = "shape";
-	this.device = device;
-
-    element.setAttribute("data-drag", `${this.id}:shape`);
-
-    this.element = element;
-    this.dragElement = element;
-
-    TweenLite.set(element, { x, y });
-
-    const inputElements = Array.from(element.querySelectorAll(".input-field"));
-    const inoutputElements = Array.from(element.querySelectorAll(".inoutput-field"));
-
-    this.inputs = inputElements.map(element => {
-      const port = new NodePort(this, element, true);
-      portLookup[port.id] = port;
-      ports.push(port);
-      return port;
-    });
-
-    this.inoutputs = inoutputElements.map(element => {
-      const port = new NodePort(this, element, false);
-      portLookup[port.id] = port;
-      ports.push(port);
-      return port;
-    });
-  }
-
-  onDrag() {
-
-    for (let input of this.inputs) {
-      input.update();
-    }
-
-    for (let inoutput of this.inoutputs) {
-      inoutput.update();
-    }
-  }
-}
+}*/
 
 
 //
@@ -645,12 +488,6 @@ class Diagram {
   constructor() {
 
     this.dragElement = this.element = diagramElement;
-
-    shapeElements.forEach((element, i) => {
-      const device = new ETHDevice(element, 50 + i * 250, 50);
-      shapeLookup[device.id] = device;
-      devices.push(device);
-    });
 
     this.target = null;
     this.dragType = null;
@@ -695,9 +532,9 @@ class Diagram {
 		//device.add(4);
         break;
 
-      case "shape":
-        this.target = shapeLookup[id];
-		this.target.device.type = this.target.device.name;
+      case "ethdevice":
+        this.target = deviceLookup[id];
+	//	this.target.device.type = this.target.device.name;
 		properties.setDeviceProperties(this.target.device);
         break;
 
@@ -717,11 +554,21 @@ class Diagram {
   }
 
   dragTarget() {
-
-    TweenLite.set(this.target.dragElement, {
-      x: `+=${this.draggable.deltaX}`,
-      y: `+=${this.draggable.deltaY}` });
-
+	  if(this.target.dragType == "ethdevice") {
+		  // eth device
+		this.target.actDeviceModel.x += this.draggable.deltaX;
+		this.target.actDeviceModel.y += this.draggable.deltaY;
+		this.target.dragElement.setAttribute("transform", "matrix(1, 0, 0, 1, " + this.target.actDeviceModel.x + ", " + this.target.actDeviceModel.y + ")");
+	  }
+	  else if(this.target.dragType == "connector" && this.target.dragElement._gsTransform != undefined){
+		  // connection
+		  this.target.dragElement._gsTransform.x += this.draggable.deltaX;
+		  this.target.dragElement._gsTransform.y += this.draggable.deltaY;
+		  this.target.dragElement.setAttribute("transform", "matrix(1, 0, 0, 1, " + this.target.dragElement._gsTransform.x + ", " + this.target.dragElement._gsTransform.y + ")");
+	//	TweenLite.set(this.target.dragElement, {
+	//		x: `+=${this.draggable.deltaX}`,
+	//		y: `+=${this.draggable.deltaY}` });
+	  }
 
     this.target.onDrag && this.target.onDrag();
   }}
@@ -749,11 +596,6 @@ var selectedStream;
 var selectedConnection;
 
 /*
-* all device models
-*/
-var devices = [];
-
-/*
 * actual selected device
 */
 var selectedDevice;
@@ -761,12 +603,12 @@ var selectedDevice;
 //
 // APP
 // ===========================================================================
-let nextUid = 0;
-let streamUid = 0;
+let nextUid = 1;
+let nextUidDevice = 1;
+let streamUid = 1;
 
 const bezierWeight = 1.0;
 
-const shapeLookup = {};
 const portLookup = {};
 const connectorLookup = {};
 
@@ -777,13 +619,19 @@ var svg;
 var diagramElement;
 var dragProxy;
 var frag;
+var fragStream;
 var connectorElement;
+var connectorStreamElement;
 var connectorLayer;
 var diagram;
 
 frag = document.createDocumentFragment();
 frag.appendChild(document.querySelector(".connector"));
 connectorElement = frag.querySelector(".connector");
+
+fragStream = document.createDocumentFragment();
+fragStream.appendChild(document.querySelector(".connector-logical"));
+connectorStreamElement = fragStream.querySelector(".connector-logical");
 	
 function init() {
 	svg = document.querySelector("#svg");
