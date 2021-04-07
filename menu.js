@@ -23,7 +23,7 @@ class Menu {
 		var menu = document.getElementById("menu");
 			
 		var a = document.createElement("a");
-		a.setAttribute("href", "javascript:new ETHDeviceView(items[" + i + "]).add();");
+		a.setAttribute("href", "javascript:maincontroller.addEthDevice(items[" + i + "]);");
 		a.classList.add("w3-bar-item");
 		a.classList.add("w3-button");
 		menu.appendChild(a);

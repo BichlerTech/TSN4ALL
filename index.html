@@ -59,15 +59,17 @@
      
   </g>
   <g class="connector">
-
-      <polyline class="connector-path-outline" />
-	  <polyline class="connector-path-outline-logical"/>
-      <polyline class="connector-path" />
+	  <polyline class="connector-path" onclick="properties.setNetProperties(this); invert(this)"/>
+	  <polyline class="connector-path-outline" />
+	  <circle class="connector-handle input-handle" cx="0" cy="0" r="4" />
+      <circle class="connector-handle inoutput-handle" cx="0" cy="0" r="4" />
+  </g>
+  <g class="connector-logical">
 	  <polyline class="connector-path-logical" marker-start="url(#arrow)" onclick="properties.setStreamProperties(this); invert(this)"/>
-
+	  <polyline class="connector-path-outline-logical"/>
       <circle class="connector-handle input-handle" cx="0" cy="0" r="4" />
       <circle class="connector-handle inoutput-handle" cx="0" cy="0" r="4" />
-    </g>
+   </g>
     
     <circle id="drag-proxy" cx="0" cy="0" r="1" fill="none" />   
 </svg>
@@ -76,7 +78,8 @@
 paramter
 </div>
 <div id="main_result" style = "height:100%; display: none;">
-result
+<textarea id="resultArea" style = "height:100%;width: 100%; font-size: 10pt; overflow:scroll;">
+</textarea>
 </div>
 <div class="w3-bar w3-black">
   <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
@@ -95,10 +98,13 @@ result
   </div>
 </div>
 <!-- partial -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js'></script>
+  <script src='./TweenLite.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script>
 <script  src="./script.js"></script>
 <script  src="./menu.js"></script>
 <script  src="./properties.js"></script>
+<script  src="./controller.js"></script>
+<script  src="./models.js"></script>
+<script  src="./view.js"></script>
 </body>
 </html>
