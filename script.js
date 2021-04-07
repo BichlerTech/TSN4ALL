@@ -12,6 +12,54 @@ function setLogical() {
 	connectionType = "logical";
 }
 
+function saveJSON() {
+	var devices_=document.getElementById("diagram");
+	//alert(devices_.innerHTML);
+	let content = '{\n';
+	content += '"TSNNetwork": {\n';
+	content += '  "base": {\n "category": "netInfo", \n';
+	content += '    "hyperperiod": 1000,\n';
+	content += '    "granularity": 10\n';
+	content += '  },\n';
+	for (let device of devices) {
+	  content += '  "node": {\n';
+	  content += '    "category": "switch"\n';
+	  content += '    "name": ' + device.actDeviceModel.name + '"\n';
+      content += '    <id>' + device.actDeviceModel.id + '</id>\n';
+	  content += '      <tsnPorts>\n';
+	  for(let port of device.actDeviceModel.ports) {
+		  content += '        <port>\n';
+		  content += '          <name>' + port.name + '</name>\n';
+		  content += '          <id>' + port.id + '</id>\n';
+		  content += '        </port>\n';
+	  }
+	  content += '      </tsnPorts>\n';
+	  content += '  </node>\n';
+    }
+	for (var key in streams) {
+		let devs = streams[key].inoutputPort.parentNode;
+		let devd = streams[key].inputPort.parentNode;
+		content += '  <edge category="flow">\n';
+		content += '    <sourceNodeId>' + devs.actDeviceModel.id + '</sourceNodeId>\n'; //					<!-- int: node id from source node where the flow is connected to -->
+		content += '    <destNodeId>' + devd.actDeviceModel.id + '</destNodeId>\n';
+		content += '    <id>' + streams[key].model.id + '</id>\n';
+		content += '    <deadline>850</deadline>\n';
+		content += '    <period>1000</period>\n';
+		content += '    <dataSize>50</dataSize>\n';
+		content += '    <vlanId>10</vlanId>\n';
+	//	alert("input: " + streams[key].inputPort.element.textContent + " id: " + streams[key].inputPort.parentNode.device.name);
+	//	alert("output: " + streams[key].inoutputPort.element.textContent + " id: " + streams[key].inoutputPort.parentNode.device.name);
+		content += '  </edge>\n';
+	}
+	
+	content += '</TSNNetwork>';
+	let result = document.getElementById('resultArea');
+	result.value = content;
+	console.log(content);
+	//var connections=document.getElementById("connections-layer");
+	//alert(connections.innerHTML);
+}
+
 function save() {
 	var devices_=document.getElementById("diagram");
 	//alert(devices_.innerHTML);
@@ -279,7 +327,7 @@ class ConnectorController {
     const data = `${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
 	this.path.setAttribute("points", data);
     this.pathOutline.setAttribute("points", data);
-	this.path.setAttribute("id", this.id);
+	this.path.setAttribute("id", this.model.name);
   }
 
   updateHandle(port) {
