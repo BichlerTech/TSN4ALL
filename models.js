@@ -3,10 +3,11 @@
 // =========================================================================== 
 class ETHDeviceModel {
 
-  constructor(name, id, type, portcount, ports, x, y) {
+  constructor(name, id, type, category, portcount, ports, x, y) {
     this.name = name;
 	this.id = id;
 	this.type = type;
+	this.category = category;
 	this.portcount = portcount;
 	this.ports = ports;
 	this.x = x;

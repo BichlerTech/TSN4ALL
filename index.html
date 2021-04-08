@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./w3.css">
+<script type="text/javascript" src="./json-viewer.js"></script>
+<link rel="stylesheet" type="text/css" href="./json-viewer.css">
 <style>
 @media screen and (max-width: 455px) {
     .h3 {
@@ -78,8 +80,25 @@
 paramter
 </div>
 <div id="main_result" style = "height:100%; display: none;">
-<textarea id="resultArea" style = "height:100%;width: 100%; font-size: 10pt; overflow:scroll;">
-</textarea>
+
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(45.3524% - 4px); height: 100%; overflow-y: auto;">
+				<textarea id="resultXML" rows="100%" cols="100%"></textarea>
+			</div>
+			<div class="gutter" style="width: 4px;"></div>
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(54.3412% - 4px); height: 100%; overflow-y: auto;">
+				<div id="json" style="height: 100%; width: 100%;"></div>
+				
+				<script>
+		var jsonObj = {};
+		var jsonViewer = new JSONViewer();
+		document.querySelector("#json").appendChild(jsonViewer.getContainer());
+	</script>
+				<!--<textarea id="resultJSON" rows="100%" cols="100%"></textarea>-->
+			</div>
+		</div>
+	</div>
 </div>
 <div class="w3-bar w3-black">
   <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
