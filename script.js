@@ -15,49 +15,82 @@ function setLogical() {
 function saveJSON() {
 	var devices_=document.getElementById("diagram");
 	//alert(devices_.innerHTML);
-	let content = '{\n';
-	content += '"TSNNetwork": {\n';
-	content += '  "base": {\n "category": "netInfo", \n';
-	content += '    "hyperperiod": 1000,\n';
-	content += '    "granularity": 10\n';
-	content += '  },\n';
+	let content = 'var cont = {';
+	content += '"TSNNetwork": {';
+	content += '  "base": {';
+	content += '    "category": "netInfo",';
+	content += '    "hyperperiod": 1000,';
+	content += '    "granularity": 10';
+	content += '  },';
+	content += '  "nodes": [';
+	let delimiter = "";
 	for (let device of devices) {
-	  content += '  "node": {\n';
-	  content += '    "category": "switch"\n';
-	  content += '    "name": ' + device.actDeviceModel.name + '"\n';
-      content += '    <id>' + device.actDeviceModel.id + '</id>\n';
-	  content += '      <tsnPorts>\n';
+	  content += delimiter +'{';
+	  content += '    "category": "' + device.actDeviceModel.category + '",';
+	  content += '    "name": "' + device.actDeviceModel.name + '",';
+      content += '    "id": ' + device.actDeviceModel.id + ',';
+	  content += '    "tsnPorts": [';
+	  delimiter = ",";
+	  let portsDel = "";
 	  for(let port of device.actDeviceModel.ports) {
-		  content += '        <port>\n';
-		  content += '          <name>' + port.name + '</name>\n';
-		  content += '          <id>' + port.id + '</id>\n';
-		  content += '        </port>\n';
+		  content += portsDel + '        {';
+		  content += '          "name": "' + port.name + '",';
+		  content += '          "id": ' + port.id + '';
+		  content += '        }';
+		  portsDel = ",";
 	  }
-	  content += '      </tsnPorts>\n';
-	  content += '  </node>\n';
+	  content += '      ],'
+	  content += ' "minGateOpenTime": 10.0';
+	  if(device.actDeviceModel.category == "switch") {
+		  content += ', "configurationPort": "irgendeiner",';
+		  content += ' "switchDelay": 8.0';
+	  }
+	  content += ' }';
     }
+	content += '  ],';
+	content += '"edge": [';
+	
+	delimiter = "";
+	for (var key in connections) {
+		let devs = connections[key].inoutputPort.parentNode;
+		let devd = connections[key].inputPort.parentNode;
+		content += delimiter + '  { "category": "cable",';
+		content += '  "sourceNodeId": ' + devs.actDeviceModel.id + ','; //					<!-- int: node id from source node where the flow is connected to -->
+		content += '  "destNodeId": ' + devd.actDeviceModel.id + ',';
+		content += '  "id": ' + connections[key].model.id + ',';
+		content += '  "linkSpeed": 1000,';
+		content += '  "cableLength": 1.0,';
+		content += '  "sourcePortId": 2,';
+		content += '  "destPortId": 3';	
+		content += '  }';
+		delimiter = ",";
+	}
+	
 	for (var key in streams) {
 		let devs = streams[key].inoutputPort.parentNode;
 		let devd = streams[key].inputPort.parentNode;
-		content += '  <edge category="flow">\n';
-		content += '    <sourceNodeId>' + devs.actDeviceModel.id + '</sourceNodeId>\n'; //					<!-- int: node id from source node where the flow is connected to -->
-		content += '    <destNodeId>' + devd.actDeviceModel.id + '</destNodeId>\n';
-		content += '    <id>' + streams[key].model.id + '</id>\n';
-		content += '    <deadline>850</deadline>\n';
-		content += '    <period>1000</period>\n';
-		content += '    <dataSize>50</dataSize>\n';
-		content += '    <vlanId>10</vlanId>\n';
+		content += delimiter + '  {';
+		content += '  "edge":  "flow",';
+		content += '   "sourceNodeId": ' + devs.actDeviceModel.id + ','; //					<!-- int: node id from source node where the flow is connected to -->
+		content += '   "destNodeId": ' + devd.actDeviceModel.id + ',';
+		content += '   "id": ' + streams[key].model.id + ',';
+		content += '   "deadline": 850,';
+		content += '   "period": 1000,';
+		content += '   "dataSize": 50,';
+		content += '   "vlanId": 10';
 	//	alert("input: " + streams[key].inputPort.element.textContent + " id: " + streams[key].inputPort.parentNode.device.name);
 	//	alert("output: " + streams[key].inoutputPort.element.textContent + " id: " + streams[key].inoutputPort.parentNode.device.name);
-		content += '  </edge>\n';
+		content += '  }';
+		delimiter = ",";
 	}
+
+	content += ']}';
 	
-	content += '</TSNNetwork>';
-	let result = document.getElementById('resultArea');
-	result.value = content;
+	content += '  };';
 	console.log(content);
-	//var connections=document.getElementById("connections-layer");
-	//alert(connections.innerHTML);
+//	let result = document.getElementById('resultJSON');
+	eval(content);
+	jsonViewer.showJSON(cont);
 }
 
 function save() {
@@ -70,7 +103,7 @@ function save() {
 	content += '    <granularity>10</granularity>\n';
 	content += '  </base>\n';
 	for (let device of devices) {
-	  content += '  <node category="switch"><br>\n';
+	  content += '  <node category="switch">\n';
 	  content += '    <name>' + device.actDeviceModel.name + '</name>\n';
       content += '    <id>' + device.actDeviceModel.id + '</id>\n';
 	  content += '      <tsnPorts>\n';
@@ -100,11 +133,8 @@ function save() {
 	}
 	
 	content += '</TSNNetwork>';
-	let result = document.getElementById('resultArea');
+	let result = document.getElementById('resultXML');
 	result.value = content;
-	console.log(content);
-	//var connections=document.getElementById("connections-layer");
-	//alert(connections.innerHTML);
 }
 
 /*
@@ -153,6 +183,7 @@ function switch2Logical() {
 
 function switch2Result() {
 	save();
+	saveJSON();
 	document.getElementById('main_graphics').style.display = 'none';
 	document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_result').style.display = 'block';

@@ -1,6 +1,7 @@
 var items = [
 { "name": "dev_ethx1",
   "type": "dev_ethx1",
+  "category": "endpoint",
   "portcount": 1,
   "ports": [
   {
@@ -12,6 +13,7 @@ var items = [
 },
 { "name": "dev_ethx2",
 "type": "dev_ethx2",
+"category": "switch",
   "portcount": 2,
   "ports": [
   {
@@ -27,6 +29,7 @@ var items = [
 },
 { "name": "dev_ethx3",
   "type": "dev_ethx3",
+  "category": "switch",
   "portcount": 3,
   "ports": [
   {
@@ -46,6 +49,7 @@ var items = [
 },
 { "name": "dev_ethx4",
   "type": "dev_ethx4",
+  "category": "switch",
   "portcount": 4,
   "ports": [
   {

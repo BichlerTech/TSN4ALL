@@ -23,7 +23,7 @@ class ETHDeviceController {
 	//this.device = device;
 	this.id = `shape_${++nextUid}`;
 	this.dragType = "ethdevice";
-	this.actDeviceModel = new ETHDeviceModel(device.name, device.id, device.type, device.portcount, device.ports, 50, 50);
+	this.actDeviceModel = new ETHDeviceModel(device.name, device.id, device.type, device.category, device.portcount, device.ports, 50, 50);
 	this.actDeviceView = new ETHDeviceView(this.actDeviceModel);
 	  
 	let element = this.actDeviceView.add();
