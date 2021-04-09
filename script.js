@@ -18,9 +18,9 @@ function saveJSON() {
 	let content = 'var cont = {';
 	content += '"TSNNetwork": {';
 	content += '  "base": {';
-	content += '    "category": "netInfo",';
-	content += '    "hyperperiod": 1000,';
-	content += '    "granularity": 10';
+	content += '    "category": "' + diagram.category + '",';
+	content += '    "hyperperiod": ' + diagram.hyperperiod + ',';
+	content += '    "granularity": ' + diagram.granularity;
 	content += '  },';
 	content += '  "nodes": [';
 	let delimiter = "";
@@ -40,10 +40,10 @@ function saveJSON() {
 		  portsDel = ",";
 	  }
 	  content += '      ],'
-	  content += ' "minGateOpenTime": 10.0';
+	  content += ' "minGateOpenTime": ' + device.actDeviceModel.minGateOpenTime;
 	  if(device.actDeviceModel.category == "switch") {
-		  content += ', "configurationPort": "irgendeiner",';
-		  content += ' "switchDelay": 8.0';
+		  content += ', "configurationPort": "' + device.actDeviceModel.configurationPort + '",';
+		  content += ' "switchDelay": ' + device.actDeviceModel.switchDelay;
 	  }
 	  content += ' }';
     }
@@ -58,10 +58,10 @@ function saveJSON() {
 		content += '  "sourceNodeId": ' + devs.actDeviceModel.id + ','; //					<!-- int: node id from source node where the flow is connected to -->
 		content += '  "destNodeId": ' + devd.actDeviceModel.id + ',';
 		content += '  "id": ' + connections[key].model.id + ',';
-		content += '  "linkSpeed": 1000,';
-		content += '  "cableLength": 1.0,';
-		content += '  "sourcePortId": 2,';
-		content += '  "destPortId": 3';	
+		content += '  "linkSpeed": ' + connections[key].model.linkSpeed + ',';
+		content += '  "cableLength": ' + connections[key].model.cableLength + ',';
+		content += '  "sourcePortId": ' + connections[key].inoutputPort.id + ',';
+		content += '  "destPortId": ' + connections[key].inputPort.id;	
 		content += '  }';
 		delimiter = ",";
 	}
@@ -98,9 +98,9 @@ function save() {
 	//alert(devices_.innerHTML);
 	let content = '<?xml version="1.0" encoding="UTF-8"?>\n';
 	content += '<TSNNetwork>\n';
-	content += '  <base category="netInfo">\n';
-	content += '    <hyperperiod>1000</hyperperiod>\n';
-	content += '    <granularity>10</granularity>\n';
+	content += '  <base category="' + diagram.category + '">\n';
+	content += '    <hyperperiod>' + diagram.hyperperiod + '</hyperperiod>\n';
+	content += '    <granularity>' + diagram.granularity + '</granularity>\n';
 	content += '  </base>\n';
 	for (let device of devices) {
 	  content += '  <node category="switch">\n';
@@ -485,7 +485,8 @@ class NodePort {
 
   constructor(parentNode, element, isInput) {
 
-    this.id = `port_${++nextUid}`;
+	this.name = `port_${++nextUid}`;
+    this.id = nextUid;
     this.dragType = "port";
 
     this.parentNode = parentNode;
@@ -581,7 +582,10 @@ class Diagram {
       onDrag: this.dragTarget,
       onDragEnd: this.stopDragging,
       onPress: this.prepareTarget });
-
+	  
+	this.category = "netInfo";
+	this.hyperperiod = 1000;
+	this.granularity = 10;
   }
   
   stopDragging() {
