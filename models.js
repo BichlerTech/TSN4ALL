@@ -3,11 +3,14 @@
 // =========================================================================== 
 class ETHDeviceModel {
 
-  constructor(name, id, type, category, portcount, ports, x, y) {
+  constructor(name, id, type, category, minGateOpenTime, configurationPort, switchDelay, portcount, ports, x, y) {
     this.name = name;
 	this.id = id;
 	this.type = type;
 	this.category = category;
+	this.minGateOpenTime = minGateOpenTime;
+	this.configurationPort = configurationPort;
+	this.switchDelay = switchDelay;
 	this.portcount = portcount;
 	this.ports = ports;
 	this.x = x;
@@ -20,9 +23,9 @@ class PhysicalConnection {
 		this.name = "";
 		this.id = "";
 		this.dragType = "connector";
-		this.length   = 0;								// cable length
-		this.quality  = 0;								// unused
 		this.connectionType = "physical";
+		this.linkSpeed = 1000;
+		this.cableLength = 1.0;	
 	}
 }
 

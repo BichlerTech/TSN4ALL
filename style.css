@@ -80,6 +80,14 @@ table.table-style-three {
     background-color: #bebebe;
 }
 
+.splitter > .gutter.active {
+  background-color: #bebebe;
+}
+
+.splitter.vertical > .gutter {
+  cursor: row-resize;
+}
+
 .h-100 {
     height: calc(100% - 40px) !important;
 }
