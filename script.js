@@ -12,7 +12,7 @@ function setLogical() {
 	connectionType = "logical";
 }
 
-function saveJSON() {
+function exportJSON() {
 	var devices_=document.getElementById("diagram");
 	//alert(devices_.innerHTML);
 	let content = 'var cont = {';
@@ -70,16 +70,14 @@ function saveJSON() {
 		let devs = streams[key].inoutputPort.parentNode;
 		let devd = streams[key].inputPort.parentNode;
 		content += delimiter + '  {';
-		content += '  "edge":  "flow",';
+		content += '  "category":  "flow",';
 		content += '   "sourceNodeId": ' + devs.actDeviceModel.id + ','; //					<!-- int: node id from source node where the flow is connected to -->
 		content += '   "destNodeId": ' + devd.actDeviceModel.id + ',';
 		content += '   "id": ' + streams[key].model.id + ',';
-		content += '   "deadline": 850,';
-		content += '   "period": 1000,';
-		content += '   "dataSize": 50,';
-		content += '   "vlanId": 10';
-	//	alert("input: " + streams[key].inputPort.element.textContent + " id: " + streams[key].inputPort.parentNode.device.name);
-	//	alert("output: " + streams[key].inoutputPort.element.textContent + " id: " + streams[key].inoutputPort.parentNode.device.name);
+		content += '   "deadline": ' + streams[key].model.deadline + ',';
+		content += '   "period": ' + streams[key].model.period + ',';
+		content += '   "dataSize": ' + streams[key].model.dataSize + ',';
+		content += '   "vlanId": ' + streams[key].model.vlanId;
 		content += '  }';
 		delimiter = ",";
 	}
@@ -87,8 +85,6 @@ function saveJSON() {
 	content += ']}';
 	
 	content += '  };';
-	console.log(content);
-//	let result = document.getElementById('resultJSON');
 	eval(content);
 	jsonViewer.showJSON(cont);
 }
@@ -162,35 +158,51 @@ function load() {
 function switch2Physical() {
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'none';
-	document.getElementById('main_result').style.display = 'none';
+	document.getElementById('main_configuration').style.display = 'none';
 	setPhysical();
 	
 	document.getElementById('graphics').style.backgroundColor = '#616161 ';
 	document.getElementById('params').style.backgroundColor = 'black';
-	document.getElementById('result').style.backgroundColor = 'black';
+	document.getElementById('configuration').style.backgroundColor = 'black';
 }
 
 function switch2Logical() {
 	setLogical();
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'block';
-	document.getElementById('main_result').style.display = 'none';
+	document.getElementById('main_configuration').style.display = 'none';
 	
 	document.getElementById('graphics').style.backgroundColor = 'black';
 	document.getElementById('params').style.backgroundColor = '#616161 ';
-	document.getElementById('result').style.backgroundColor = 'black';
+	document.getElementById('configuration').style.backgroundColor = 'black';
 }
 
-function switch2Result() {
-	save();
-	saveJSON();
+function switch2Model() {
+	//save();
+	//exportJSON();
 	document.getElementById('main_graphics').style.display = 'none';
 	document.getElementById('main_parameter').style.display = 'none';
-	document.getElementById('main_result').style.display = 'block';
+	document.getElementById('main_model').style.display = 'block';
+	document.getElementById('main_configuration').style.display = 'none';
 	
 	document.getElementById('graphics').style.backgroundColor = 'black';
 	document.getElementById('params').style.backgroundColor = 'black';
-	document.getElementById('result').style.backgroundColor = '#616161 ';
+	document.getElementById('model').style.backgroundColor = '#616161 ';
+	document.getElementById('configuration').style.backgroundColor = 'black ';
+}
+
+function switch2Configuration() {
+	//save();
+	exportJSON();
+	document.getElementById('main_graphics').style.display = 'none';
+	document.getElementById('main_parameter').style.display = 'none';
+	document.getElementById('main_model').style.display = 'none';
+	document.getElementById('main_configuration').style.display = 'block';
+	
+	document.getElementById('graphics').style.backgroundColor = 'black';
+	document.getElementById('params').style.backgroundColor = 'black';
+	document.getElementById('model').style.backgroundColor = 'black ';
+	document.getElementById('configuration').style.backgroundColor = '#616161 ';
 }
 
 //
@@ -205,11 +217,11 @@ class ConnectorController {
     
 	this.connectionType = connectionType;
 	if(connectionType == "physical") {
-		this.model = new PhysicalConnection();
 		this.element = connectorElement.cloneNode(true);
+		this.model = new PhysicalConnection();
 		this.model.name = `Connector_${nextUid}`;
 		this.model.id = nextUid++;
-		connections[this.name] = this;
+		connections[this.model.name] = this;
 	}
 	else {
 		this.element = connectorStreamElement.cloneNode(true);
@@ -322,7 +334,7 @@ class ConnectorController {
 	const data = `${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
 	this.path.setAttribute("points", data);
     this.pathOutline.setAttribute("points", data);
-	this.path.setAttribute("id", this.id);
+	this.path.setAttribute("id", this.model.name);
   }
   
   updatePathLogical() {
@@ -611,14 +623,12 @@ class Diagram {
     switch (dragType) {
       case "diagram":
         this.target = this;
-		//let device = new ETHDeviceView("BTech Switch", 4, null);
-		//device.add(4);
+		properties.setGeneralProperties(this.target);
         break;
 
       case "ethdevice":
         this.target = deviceLookup[id];
-	//	this.target.device.type = this.target.device.name;
-		properties.setDeviceProperties(this.target.device);
+		properties.setDeviceProperties(this.target);
         break;
 
       case "port":
