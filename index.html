@@ -79,24 +79,47 @@
 <div id="main_parameter" style = "height:100%; display: none;">
 paramter
 </div>
-<div id="main_result" style = "height:100%; display: none;">
+<div id="main_model" style = "height:100%; display: none;">
 
 	<div class="example p-0" style="height: 100%">
 		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
-			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(45.3524% - 4px); height: 100%; overflow-y: auto;">
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
+				<div id="model" style="height: 100%; width: 100%;"></div>
+				
+				<script>
+					var modelObj = {};
+					var modelViewer = new JSONViewer();
+					document.querySelector("#model").appendChild(modelViewer.getContainer());
+				</script>
+				<!--<textarea id="resultJSON" rows="100%" cols="100%"></textarea>-->
+			</div>
+			<!--<div class="gutter" style="width: 4px;"></div>
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
 				<textarea id="resultXML" rows="100%" cols="100%"></textarea>
 			</div>
-			<div class="gutter" style="width: 4px;"></div>
-			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(54.3412% - 4px); height: 100%; overflow-y: auto;">
+			-->
+		</div>
+	</div>
+</div>
+<div id="main_configuration" style = "height:100%; display: none;">
+
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
 				<div id="json" style="height: 100%; width: 100%;"></div>
 				
 				<script>
-		var jsonObj = {};
-		var jsonViewer = new JSONViewer();
-		document.querySelector("#json").appendChild(jsonViewer.getContainer());
-	</script>
+					var jsonObj = {};
+					var jsonViewer = new JSONViewer();
+					document.querySelector("#json").appendChild(jsonViewer.getContainer());
+				</script>
 				<!--<textarea id="resultJSON" rows="100%" cols="100%"></textarea>-->
 			</div>
+			<!--<div class="gutter" style="width: 4px;"></div>
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
+				<textarea id="resultXML" rows="100%" cols="100%"></textarea>
+			</div>
+			-->
 		</div>
 	</div>
 </div>
@@ -107,7 +130,8 @@ paramter
 <div class="w3-bar w3-black">
   <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
   <button id="params" class="w3-bar-item w3-button" onclick="switch2Logical();">logical</button>
-  <button id="result" class="w3-bar-item w3-button" onclick="switch2Result();">Result</button>
+  <button id="model" class="w3-bar-item w3-button" onclick="switch2Model();">Model</button>
+  <button id="configuration" class="w3-bar-item w3-button" onclick="switch2Configuration();">Configuration</button>
 </div>
 </div>
 <span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topright w3-xlarge" onclick="w3_openProperties()">&#9776;</span>

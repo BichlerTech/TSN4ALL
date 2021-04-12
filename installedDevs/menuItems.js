@@ -2,6 +2,9 @@ var items = [
 { "name": "dev_ethx1",
   "type": "dev_ethx1",
   "category": "endpoint",
+  "minGateOpenTime": 100,
+  "configurationPort": "eth22",
+  "switchDelay": 10,
   "portcount": 1,
   "ports": [
   {

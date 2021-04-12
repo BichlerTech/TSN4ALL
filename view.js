@@ -3,17 +3,15 @@ class ETHDeviceView {
 	
 	constructor(device) {
 		//this.id = `ethdevview_${++nextUid}`;
-		this.name = device.name;
+		//this.name = device.name;
 		this.portcount = device.portcount;
 		this.ports = device.ports;
 		this.device = device;
 		this.itext = undefined;
 	}
 	
-	updateName(name) {
-		this.device.name = name;
-		this.name = name;
-		this.itext.innerHTML = this.name;
+	updateCaption() {	
+		this.itext.innerHTML = this.device.name;
 	}
 	
 	add() {
@@ -59,7 +57,7 @@ class ETHDeviceView {
 		this.itext.setAttribute('class','header-title');
 		this.itext.setAttribute('x','62');
 		this.itext.setAttribute('y','30');
-		this.itext.innerHTML = this.name;
+		this.itext.innerHTML = this.device.name;
 		g.appendChild(this.itext);
 		
 		g = document.createElementNS("http://www.w3.org/2000/svg", "g");

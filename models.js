@@ -36,9 +36,9 @@ class StreamConnection {
 		this.dragType = "connector";
 		this.connectionType = "physical";
 		this.vLan = 1;
-		this.vLanId = 0;
 		this.period = 800;
 		this.deadline = 1000;
 		this.dataSize = 50;
+		this.vlanId = 0;
 	}
 }

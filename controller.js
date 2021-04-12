@@ -33,6 +33,11 @@ class ETHDeviceController {
     devices.push(this);
   }
   
+  updateName(name) {
+	  this.actDeviceModel.name = name;
+	  this.actDeviceView.updateCaption();
+  }
+  
   createControlls(element) {
 
     element.setAttribute("data-drag", `${this.id}:ethdevice`);
