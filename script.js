@@ -14,14 +14,11 @@ function setLogical() {
 
 function exportPersistJSON() {
 	var devices_=document.getElementById("diagram");
-//	let content = 'var cont = {';
 	let content = '{';
 	content += '"TSNNetwork": {';
-	content += '  "base": {';
-	content += '    "category": "' + diagram.category + '",';
-	content += '    "hyperperiod": ' + diagram.hyperperiod + ',';
-	content += '    "granularity": ' + diagram.granularity;
-	content += '  },';
+	content += '  "base": ';
+	content += JSON.stringify(diagram.model);
+	content += '  ,';
 	content += '  "nodes": [';
 	let delimiter = "";
 	for (let device of devices) {
@@ -29,8 +26,6 @@ function exportPersistJSON() {
 	    delimiter = ",";
     }
 	content += '  ]';
-	
-	
 	content += ',"edge": [';
 	
 	delimiter = "";
@@ -53,27 +48,18 @@ function exportPersistJSON() {
 		content += delimiter + JSON.stringify(tmp);
 		delimiter = ",";
 	}
-
 	content += ']}';
-	
-//	content += '  };';
 	content += '  }';
 	return content;
-	//console.log(content);
-//	eval(content);
-//	modelViewer.showJSON(cont);
 }
 
 function exportJSON() {
-	var devices_=document.getElementById("diagram");
-	//alert(devices_.innerHTML);
+	var devices_ = document.getElementById("diagram");
 	let content = 'var cont = {';
 	content += '"TSNNetwork": {';
-	content += '  "base": {';
-	content += '    "category": "' + diagram.category + '",';
-	content += '    "hyperperiod": ' + diagram.hyperperiod + ',';
-	content += '    "granularity": ' + diagram.granularity;
-	content += '  },';
+	content += '  "base": ';
+	content += JSON.stringify(diagram.model);
+	content += '  ,';
 	content += '  "nodes": [';
 	let delimiter = "";
 	for (let device of devices) {
@@ -210,6 +196,7 @@ function load() {
 	for(i = 0; i < defs.TSNNetwork.nodes.length; i++) {
 		maincontroller.addEthDevice(defs.TSNNetwork.nodes[i]);
 	}
+	
 	//svg.innerHTML  = defs;
 	//init();
 }
@@ -314,8 +301,6 @@ class ConnectorController {
 		streams[this.model.name] = this;
 	}
 	selectedStream = this;
-	//this.Vlan = 5;
-	//this.VlanShortCut = "BK";
 	if(connectionType == "physical") {
 		this.path = this.element.querySelector(".connector-path");
 		this.pathOutline = this.element.querySelector(".connector-path-outline");
@@ -327,15 +312,12 @@ class ConnectorController {
     
     this.inputHandle = this.element.querySelector(".input-handle");
     this.inoutputHandle = this.element.querySelector(".inoutput-handle");
-	//this.tsnProperties = new TSNProperties();
 	this.startelement = null;
 	this.endElement = null;
   }
 
   init(port) {
-
     connectorLayer.appendChild(this.element);
-
     this.isInput = port.isInput;
 
     if (port.isInput) {
@@ -361,24 +343,10 @@ class ConnectorController {
 
     const x1 = this.inputHandle._gsTransform.x;
     const y1 = this.inputHandle._gsTransform.y;
-
     const x4 = this.inoutputHandle._gsTransform.x;
     const y4 = this.inoutputHandle._gsTransform.y;
 
-	var p0x = 0;
-	var p0y = 0;
-
-	var p1x = 0;
-	var p1y = 0;
-	
-	var p2x = 0;
-	var p2y = 0;
-	
-	var p3x = 0;
-	var p3y = 0;
-	
-	var p4x = 0;
-	var p4y = 0;
+	var p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y = 0;
 	
 	if(x1 < x4) {
 		//from right to left
@@ -424,10 +392,8 @@ class ConnectorController {
 
     const x1 = this.inputHandle._gsTransform.x;
     const y1 = this.inputHandle._gsTransform.y;
-
     const x4 = this.inoutputHandle._gsTransform.x;
     const y4 = this.inoutputHandle._gsTransform.y;
-
     var dx = 50;
 	
 	if(dx > 70)
@@ -459,23 +425,13 @@ class ConnectorController {
   updateHandle(port) {
 
     if (port === this.inputPort) {
-	//	this.inputHandle.setAttribute("x", port.global.x);
-	//	this.inputHandle.setAttribute("y", port.global.y);
-		
 		this.inputHandle.setAttribute("transform", "matrix(1, 0, 0, 1, " + port.global.x + ", " + port.global.y + ")");
 		this.inputHandle._gsTransform.x = port.global.x;
 		this.inputHandle._gsTransform.y = port.global.y;
-
-
     } else if (port === this.inoutputPort) {
 		this.inoutputHandle.setAttribute("transform", "matrix(1, 0, 0, 1, " + port.global.x + ", " + port.global.y + ")");
 		this.inoutputHandle._gsTransform.x = port.global.x;
 		this.inoutputHandle._gsTransform.y = port.global.y;
-		
-    //  TweenLite.set(this.inoutputHandle, {
-    //    x: port.global.x,
-    //    y: port.global.y });
-
     }
 
 	if(this.connectionType == "physical")
@@ -491,24 +447,17 @@ class ConnectorController {
     let hitPort;
 
     for (let device of devices) {
-
       if (device.element === skipShape) {
         continue;
       }
-
       if (Draggable.hitTest(this.dragElement, device.element)) {
-
-     //   const ports = this.isInput ? device.inoutputs : device.inputs;
 		const ports = device.inoutputs;
-
         for (let port of ports) {
-
           if (Draggable.hitTest(this.dragElement, port.portElement)) {
             hitPort = port;
             break;
           }
         }
-
         if (hitPort) {
           break;
         }
@@ -524,28 +473,22 @@ class ConnectorController {
       }
 
       this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
-
       hitPort.addConnector(this);
-	//  properties.addConnector(this);
       this.updateHandle(hitPort);
-
     } else {
       this.remove();
     }
   }
 
   remove() {
-
     if (this.inputPort) {
       this.inputPort.removeConnector(this);
     }
-
     if (this.inoutputPort) {
       this.inoutputPort.removeConnector(this);
     }
 
     this.isSelected = false;
-
     this.path.removeAttribute("d");
     this.pathOutline.removeAttribute("d");
     this.dragElement.removeAttribute("data-drag");
@@ -623,7 +566,6 @@ class NodePort {
   }
 
   removeConnector(connection) {
-
     const index = this.connectors.indexOf(connection);
 
     if (index > -1) {
@@ -636,7 +578,6 @@ class NodePort {
   }
 
   update() {
-
     const transform = this.portElement.getTransformToElement(diagramElement);
     this.global = this.center.matrixTransform(transform);
 
@@ -645,15 +586,6 @@ class NodePort {
     }
   }
 }
-  
-/*
-class TSNProperties {
-	constructor() {
-		this.vLan = "";
-		this.streamId = "";
-	}
-}*/
-
 
 //
 // DIAGRAM
@@ -677,10 +609,7 @@ class Diagram {
       onDrag: this.dragTarget,
       onDragEnd: this.stopDragging,
       onPress: this.prepareTarget });
-	  
-	this.category = "netInfo";
-	this.hyperperiod = 1000;
-	this.granularity = 10;
+	this.model = new DiagramModel();
   }
   
   stopDragging() {
@@ -731,19 +660,14 @@ class Diagram {
 
   dragTarget() {
 	  if(this.target.dragType == "ethdevice") {
-		  // eth device
 		this.target.actDeviceModel.x += this.draggable.deltaX;
 		this.target.actDeviceModel.y += this.draggable.deltaY;
 		this.target.dragElement.setAttribute("transform", "matrix(1, 0, 0, 1, " + this.target.actDeviceModel.x + ", " + this.target.actDeviceModel.y + ")");
 	  }
 	  else if(this.target.dragType == "connector" && this.target.dragElement._gsTransform != undefined){
-		  // connection
 		  this.target.dragElement._gsTransform.x += this.draggable.deltaX;
 		  this.target.dragElement._gsTransform.y += this.draggable.deltaY;
 		  this.target.dragElement.setAttribute("transform", "matrix(1, 0, 0, 1, " + this.target.dragElement._gsTransform.x + ", " + this.target.dragElement._gsTransform.y + ")");
-	//	TweenLite.set(this.target.dragElement, {
-	//		x: `+=${this.draggable.deltaX}`,
-	//		y: `+=${this.draggable.deltaY}` });
 	  }
 
     this.target.onDrag && this.target.onDrag();

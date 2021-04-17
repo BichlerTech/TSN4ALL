@@ -36,7 +36,7 @@ class Properties {
 		var propTd2 = document.createElement("td");
 		propTr.appendChild(propTd2);
 		var devNameInput = document.createElement("input");
-		devNameInput.value = diagram.category;
+		devNameInput.value = diagram.model.category;
 		propTd2.appendChild(devNameInput);
 		
 		devNameInput.addEventListener ("change", function () {
@@ -57,11 +57,11 @@ class Properties {
 		var propTd2 = document.createElement("td");
 		propTr.appendChild(propTd2);
 		var hyperperiodInput = document.createElement("input");
-		hyperperiodInput.value = diagram.hyperperiod;
+		hyperperiodInput.value = diagram.model.hyperperiod;
 		propTd2.appendChild(hyperperiodInput);
 		
 		hyperperiodInput.addEventListener ("change", function () {
-			diagram.hyperperiod = this.value;
+			diagram.model.hyperperiod = this.value;
 		});
 		
 		var propTr = document.createElement("tr");
@@ -75,10 +75,10 @@ class Properties {
 		var propTd2 = document.createElement("td");
 		propTr.appendChild(propTd2);
 		var granularityInput = document.createElement("input");
-		granularityInput.value = diagram.granularity;
+		granularityInput.value = diagram.model.granularity;
 		propTd2.appendChild(granularityInput);
 		granularityInput.addEventListener ("change", function () {
-			diagram.granularity = this.value;
+			diagram.model.granularity = this.value;
 		});
 	}
 	

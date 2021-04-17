@@ -2,6 +2,11 @@
 // MODELS
 // =========================================================================== 
 class DiagramModel {
+	constructor() {
+		this.category = "netInfo";
+		this.hyperperiod = 1000;
+		this.granularity = 10;
+	}
 }
 
 class ETHDeviceModel {
