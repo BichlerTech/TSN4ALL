@@ -1,10 +1,24 @@
-//
-// NODE SHAPE
-// =========================================================================== 
-class ETHDiagramController {
+// ===========================================================================
+class DiagramController {
 
   constructor() {
-	this.actDeviceController = undefined;
+    this.actDeviceController = undefined;
+    this.dragElement = this.element = diagramElement;
+
+    this.target = null;
+    this.dragType = null;
+
+    this.dragTarget = this.dragTarget.bind(this);
+    this.prepareTarget = this.prepareTarget.bind(this);
+    this.stopDragging = this.stopDragging.bind(this);
+
+    this.draggable = new Draggable(dragProxy, {
+      allowContextMenu: true,
+      trigger: svg,
+      onDrag: this.dragTarget,
+      onDragEnd: this.stopDragging,
+      onPress: this.prepareTarget });
+	this.model = new DiagramModel();
   }
   
   addEthDevice(device) {
@@ -12,10 +26,69 @@ class ETHDiagramController {
 	  device.id = nextUidDevice++;
 	  this.actDeviceController = new ETHDeviceController(device);
   }
+
+  stopDragging() {
+    if(this.target != undefined) {
+      this.target.onDragEnd && this.target.onDragEnd();
+	  }
+  }
+
+  prepareTarget(event) {
+
+    let element = event.target;
+    let drag;
+
+    while (!(drag = element.getAttribute("data-drag")) && element !== svg) {
+      element = element.parentNode;
+    }
+
+    drag = drag || "diagram:diagram";
+    const split = drag.split(":");
+    const id = split[0];
+    const dragType = split[1];
+
+    switch (dragType) {
+      case "diagram":
+        this.target = this;
+		properties.setGeneralProperties(this.target);
+        break;
+
+      case "ethdevice":
+        this.target = deviceLookup[id];
+		properties.setDeviceProperties(this.target);
+        break;
+
+      case "port":
+        const port = portLookup[id];
+		console.log("create connector!");
+        port.createConnector();
+        this.target = port.lastConnector;
+        this.dragType = this.target.dragType;
+        break;
+
+      case "connector":
+        this.target = connectorLookup[id];
+        break;
+	  }
+
+  }
+
+  dragTarget() {
+	  if(this.target.dragType == "ethdevice") {
+		this.target.actDeviceModel.x += this.draggable.deltaX;
+		this.target.actDeviceModel.y += this.draggable.deltaY;
+		this.target.dragElement.setAttribute("transform", "matrix(1, 0, 0, 1, " + this.target.actDeviceModel.x + ", " + this.target.actDeviceModel.y + ")");
+	  }
+	  else if(this.target.dragType == "connector" && this.target.dragElement._gsTransform != undefined){
+		  this.target.dragElement._gsTransform.x += this.draggable.deltaX;
+		  this.target.dragElement._gsTransform.y += this.draggable.deltaY;
+		  this.target.dragElement.setAttribute("transform", "matrix(1, 0, 0, 1, " + this.target.dragElement._gsTransform.x + ", " + this.target.dragElement._gsTransform.y + ")");
+	  }
+
+    this.target.onDrag && this.target.onDrag();
+  }
 }
 
-//
-// NODE SHAPE
 // =========================================================================== 
 class ETHDeviceController {
 
@@ -47,10 +120,9 @@ class ETHDeviceController {
 
     this.element = element;
     this.dragElement = element;
-	var x = this.actDeviceModel.x;
-	var y = this.actDeviceModel.y;
-	element.setAttribute("transform", "matrix(1, 0, 0, 1, " + x + ","+ y +" )");
-//    TweenLite.set(element, { x, y });
+	  var x = this.actDeviceModel.x;
+	  var y = this.actDeviceModel.y;
+	  element.setAttribute("transform", "matrix(1, 0, 0, 1, " + x + ","+ y +" )");
 
     const inputElements = Array.from(element.querySelectorAll(".input-field"));
     const inoutputElements = Array.from(element.querySelectorAll(".inoutput-field"));
@@ -82,7 +154,6 @@ class ETHDeviceController {
   }
 }
 
-const maincontroller = new ETHDiagramController();
 /*
 * all device controllers
 */
