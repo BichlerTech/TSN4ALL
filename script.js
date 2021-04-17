@@ -588,9 +588,9 @@ class NodePort {
 }
 
 //
-// DIAGRAM
+// DIAGRAM_Controller
 // ===========================================================================
-class Diagram {
+class DiagramController {
 
   constructor() {
 
@@ -742,7 +742,7 @@ function init() {
 
 	
 	connectorLayer = document.querySelector("#connections-layer");
-	diagram = new Diagram();
+	diagram = new DiagramController();
 }
 
 init();
