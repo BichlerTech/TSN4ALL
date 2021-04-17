@@ -84,12 +84,12 @@ paramter
 	<div class="example p-0" style="height: 100%">
 		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
 			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
-				<div id="model" style="height: 100%; width: 100%;"></div>
+				<div id="modeljson" style="height: 100%; width: 100%;"></div>
 				
 				<script>
 					var modelObj = {};
 					var modelViewer = new JSONViewer();
-					document.querySelector("#model").appendChild(modelViewer.getContainer());
+					document.querySelector("#modeljson").appendChild(modelViewer.getContainer());
 				</script>
 				<!--<textarea id="resultJSON" rows="100%" cols="100%"></textarea>-->
 			</div>
@@ -124,6 +124,18 @@ paramter
 	</div>
 </div>
 
+<div id="main_model2save" style = "height:100%; display: none;">
+
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+			<!--<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">-->
+			<div style="height: 100%; width: 100%;">
+				<textarea id="model2saveText" rows="100%" cols="100%"></textarea>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script src="https://metroui.org.ua/metro/js/metro.js?ver=@@b-version"></script>
     
 
@@ -132,6 +144,7 @@ paramter
   <button id="params" class="w3-bar-item w3-button" onclick="switch2Logical();">logical</button>
   <button id="model" class="w3-bar-item w3-button" onclick="switch2Model();">Model</button>
   <button id="configuration" class="w3-bar-item w3-button" onclick="switch2Configuration();">Configuration</button>
+  <button id="model2save" class="w3-bar-item w3-button" onclick="switch2Model2Save();">Model2Save</button>
 </div>
 </div>
 <span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topright w3-xlarge" onclick="w3_openProperties()">&#9776;</span>

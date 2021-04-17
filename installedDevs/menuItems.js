@@ -33,7 +33,7 @@ var items = [
 { "name": "dev_ethx3",
   "type": "dev_ethx3",
   "category": "switch",
-  "portcount": 3,
+  "portcount": 4,
   "ports": [
   {
 	  "name": "port1",
@@ -47,8 +47,12 @@ var items = [
 	  "name": "port3",
 	  "id": 3,
 	  "property" : "irgendwas"
+  },{
+	  "name": "port4",
+	  "id": 4,
+	  "property" : "irgendwas"
   }],
-  "image" : "index.jpg"
+  "image" : "TSN.png"
 },
 { "name": "dev_ethx4",
   "type": "dev_ethx4",
@@ -72,6 +76,6 @@ var items = [
 	  "id": 4,
 	  "property" : "irgendwas"
   }],
-  "image" : "index.jpg"
+  "image" : "btech_tsn_x4.png"
 }
 ];

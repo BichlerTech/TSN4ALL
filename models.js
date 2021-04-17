@@ -1,6 +1,9 @@
 //
-// NODE SHAPE
+// MODELS
 // =========================================================================== 
+class DiagramModel {
+}
+
 class ETHDeviceModel {
 
   constructor(name, id, type, category, minGateOpenTime, configurationPort, switchDelay, portcount, ports, x, y) {
@@ -22,8 +25,8 @@ class PhysicalConnection {
 	constructor() {
 		this.name = "";
 		this.id = "";
-		this.dragType = "connector";
-		this.connectionType = "physical";
+	//	this.dragType = "connector";
+		this.category = "cable",
 		this.linkSpeed = 1000;
 		this.cableLength = 1.0;	
 	}
@@ -33,8 +36,8 @@ class StreamConnection {
 	constructor() {
 		this.name = "";
 		this.id = "";
-		this.dragType = "connector";
-		this.connectionType = "physical";
+	//	this.dragType = "connector";
+		this.category = "flow",
 		this.vLan = 1;
 		this.period = 800;
 		this.deadline = 1000;

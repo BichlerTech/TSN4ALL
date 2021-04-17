@@ -20,10 +20,13 @@ class ETHDiagramController {
 class ETHDeviceController {
 
   constructor(device) {
-	//this.device = device;
-	this.id = `shape_${++nextUid}`;
+	this.id = device.id;
 	this.dragType = "ethdevice";
-	this.actDeviceModel = new ETHDeviceModel(device.name, device.id, device.type, device.category, device.minGateOpenTime, device.configurationPort, device.switchDelay, device.portcount, device.ports, 50, 50);
+	if(device.x == undefined || device.x < 0)
+		device.x = 50;
+	if(device.y == undefined || device.y < 0)
+		device.y = 50;
+	this.actDeviceModel = new ETHDeviceModel(device.name, device.id, device.type, device.category, device.minGateOpenTime, device.configurationPort, device.switchDelay, device.portcount, device.ports, device.x, device.y);
 	this.actDeviceView = new ETHDeviceView(this.actDeviceModel);
 	  
 	let element = this.actDeviceView.add();
