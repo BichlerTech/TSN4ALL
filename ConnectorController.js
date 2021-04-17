@@ -1,13 +1,13 @@
 // ===========================================================================
 class ConnectorController {
 
-    constructor(connectionType) {
+    constructor(connectionCategory) {
   
       this.dragType = "connector";
       this.isSelected = false;
       
-      this.connectionType = connectionType;
-      if(connectionType == "physical") {
+      this.connectionCategory = connectionCategory;
+      if(connectionCategory == "cable") {
           this.element = connectorElement.cloneNode(true);
           this.model = new PhysicalConnection();
           this.model.name = `Connector_${connectorUid}`;
@@ -22,7 +22,7 @@ class ConnectorController {
           streams[this.model.name] = this;
       }
       selectedStream = this;
-      if(connectionType == "physical") {
+      if(connectionCategory == "cable") {
           this.path = this.element.querySelector(".connector-path");
           this.pathOutline = this.element.querySelector(".connector-path-outline");
       }
@@ -144,7 +144,7 @@ class ConnectorController {
           this.inoutputHandle._gsTransform.y = port.global.y;
       }
   
-      if(this.connectionType == "physical")
+      if(this.connectionCategory == "cable")
           this.updatePath();
       else
           this.updatePathLogical();
@@ -215,7 +215,7 @@ class ConnectorController {
     }
   
     onDrag() {
-      if(this.connectionType == "physical")
+      if(this.connectionCategory == "cable")
           this.updatePath();
       else
           this.updatePathLogical();

@@ -2,14 +2,14 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
   return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 
-var connectionType = "physical";
+var connectionCategory = "cable";
 
-function setPhysical() {
-	connectionType = "physical";
+function setCable() {
+	connectionCategory = "cable";
 }
 
-function setLogical() {
-	connectionType = "logical";
+function setFlow() {
+	connectionCategory = "flow";
 }
 
 function exportPersistJSON() {
@@ -194,7 +194,19 @@ function load() {
 	var svg=document.getElementById("diagram");
 	
 	for(i = 0; i < defs.TSNNetwork.nodes.length; i++) {
-		maincontroller.addEthDevice(defs.TSNNetwork.nodes[i]);
+		diagram.addEthDevice(defs.TSNNetwork.nodes[i]);
+	}
+	for(i = 0; i < defs.TSNNetwork.edge.length; i++) {
+		let edge = defs.TSNNetwork.edge[i];
+		connectionCategory = edge.category;
+		const port = portLookup[edge.sourcePortId];
+		port.createConnector();
+		
+		// get connector from port
+		let connector = port.lastConnector;
+		connector.placeHandle();
+       // this.target = port.lastConnector;
+       // this.dragType = this.target.dragType;
 	}
 }
 
@@ -202,7 +214,7 @@ function switch2Physical() {
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_configuration').style.display = 'none';
-	setPhysical();
+	setCable();
 	
 	document.getElementById('graphics').style.backgroundColor = '#616161 ';
 	document.getElementById('params').style.backgroundColor = 'black';
@@ -211,7 +223,7 @@ function switch2Physical() {
 }
 
 function switch2Logical() {
-	setLogical();
+	setFlow();
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'block';
 	document.getElementById('main_configuration').style.display = 'none';
@@ -314,7 +326,7 @@ class NodePort {
       connector = connectorPool.pop();
       connectorLookup[connector.id] = connector;
     } else {
-      connector = new ConnectorController(connectionType);
+      connector = new ConnectorController(connectionCategory);
     }
 
     connector.init(this);
