@@ -12,6 +12,58 @@ function setLogical() {
 	connectionType = "logical";
 }
 
+function exportPersistJSON() {
+	var devices_=document.getElementById("diagram");
+//	let content = 'var cont = {';
+	let content = '{';
+	content += '"TSNNetwork": {';
+	content += '  "base": {';
+	content += '    "category": "' + diagram.category + '",';
+	content += '    "hyperperiod": ' + diagram.hyperperiod + ',';
+	content += '    "granularity": ' + diagram.granularity;
+	content += '  },';
+	content += '  "nodes": [';
+	let delimiter = "";
+	for (let device of devices) {
+		content += delimiter + JSON.stringify(device.actDeviceModel);
+	    delimiter = ",";
+    }
+	content += '  ]';
+	
+	
+	content += ',"edge": [';
+	
+	delimiter = "";
+	for (var key in connections) {
+		let tmp = JSON.parse(JSON.stringify(connections[key].model));
+		tmp.sourceNodeId = connections[key].inoutputPort.parentNode.actDeviceModel.id;
+		tmp.destNodeId = connections[key].inputPort.parentNode.actDeviceModel.id;
+		tmp.sourcePortId = connections[key].inoutputPort.id;
+		tmp.destPortId = connections[key].inputPort.id;
+		content += delimiter + JSON.stringify(tmp);
+		delimiter = ",";
+	}
+	
+	for (var key in streams) {
+		let tmp = JSON.parse(JSON.stringify(streams[key].model));
+		tmp.sourceNodeId = streams[key].inoutputPort.parentNode.actDeviceModel.id;
+		tmp.destNodeId = streams[key].inputPort.parentNode.actDeviceModel.id;
+		tmp.sourcePortId = streams[key].inoutputPort.id;
+		tmp.destPortId = streams[key].inputPort.id;
+		content += delimiter + JSON.stringify(tmp);
+		delimiter = ",";
+	}
+
+	content += ']}';
+	
+//	content += '  };';
+	content += '  }';
+	return content;
+	//console.log(content);
+//	eval(content);
+//	modelViewer.showJSON(cont);
+}
+
 function exportJSON() {
 	var devices_=document.getElementById("diagram");
 	//alert(devices_.innerHTML);
@@ -149,10 +201,17 @@ function invert(me) {
 }
 
 function load() {
-	var devices_ = document.getElementById("text");
+	let devices_ = 'var defs =';
+	devices_	+= document.getElementById('model2saveText').value;
+	devices_	+= ';';
+	eval(devices_);
 	var svg=document.getElementById("diagram");
-	svg.innerHTML  = devices_.value;
-	init();
+	
+	for(i = 0; i < defs.TSNNetwork.nodes.length; i++) {
+		maincontroller.addEthDevice(defs.TSNNetwork.nodes[i]);
+	}
+	//svg.innerHTML  = defs;
+	//init();
 }
 
 function switch2Physical() {
@@ -163,6 +222,7 @@ function switch2Physical() {
 	
 	document.getElementById('graphics').style.backgroundColor = '#616161 ';
 	document.getElementById('params').style.backgroundColor = 'black';
+	document.getElementById('model').style.backgroundColor = 'black ';
 	document.getElementById('configuration').style.backgroundColor = 'black';
 }
 
@@ -174,12 +234,17 @@ function switch2Logical() {
 	
 	document.getElementById('graphics').style.backgroundColor = 'black';
 	document.getElementById('params').style.backgroundColor = '#616161 ';
+	document.getElementById('model').style.backgroundColor = 'black ';
 	document.getElementById('configuration').style.backgroundColor = 'black';
 }
 
 function switch2Model() {
-	//save();
-	//exportJSON();
+	let content = 'var cont =';
+	content += exportPersistJSON();
+	content += ';';
+	console.log(content);
+	eval(content);
+	modelViewer.showJSON(cont);
 	document.getElementById('main_graphics').style.display = 'none';
 	document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_model').style.display = 'block';
@@ -205,6 +270,24 @@ function switch2Configuration() {
 	document.getElementById('configuration').style.backgroundColor = '#616161 ';
 }
 
+function switch2Model2Save() {
+	let content = exportPersistJSON();
+	console.log(content);
+	document.getElementById('model2saveText').value = content;
+	
+	document.getElementById('main_graphics').style.display = 'none';
+	document.getElementById('main_parameter').style.display = 'none';
+	document.getElementById('main_model').style.display = 'none';
+	document.getElementById('main_configuration').style.display = 'none';
+	document.getElementById('main_model2save').style.display = 'block';
+	
+	document.getElementById('graphics').style.backgroundColor = 'black';
+	document.getElementById('params').style.backgroundColor = 'black';
+	document.getElementById('model').style.backgroundColor = 'black ';
+	document.getElementById('configuration').style.backgroundColor = 'black ';
+	document.getElementById('model2save').style.backgroundColor = '#616161';
+}
+
 //
 // CONNECTOR
 // ===========================================================================
@@ -219,15 +302,15 @@ class ConnectorController {
 	if(connectionType == "physical") {
 		this.element = connectorElement.cloneNode(true);
 		this.model = new PhysicalConnection();
-		this.model.name = `Connector_${nextUid}`;
-		this.model.id = nextUid++;
+		this.model.name = `Connector_${connectorUid}`;
+		this.model.id = connectorUid++;
 		connections[this.model.name] = this;
 	}
 	else {
 		this.element = connectorStreamElement.cloneNode(true);
 		this.model = new StreamConnection();
-		this.model.name = `Stream_${streamUid}`;
-		this.model.id = streamUid++;
+		this.model.name = `Connector_${connectorUid}`;
+		this.model.id = connectorUid++;
 		streams[this.model.name] = this;
 	}
 	selectedStream = this;
@@ -698,7 +781,8 @@ var selectedDevice;
 // ===========================================================================
 let nextUid = 1;
 let nextUidDevice = 1;
-let streamUid = 1;
+let connectorUid = 1;
+//let streamUid = 1;
 
 const bezierWeight = 1.0;
 
