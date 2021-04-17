@@ -1,10 +1,8 @@
-//
-// DIAGRAM_Controller
 // ===========================================================================
 class DiagramController {
 
   constructor() {
-
+    this.actDeviceController = undefined;
     this.dragElement = this.element = diagramElement;
 
     this.target = null;
@@ -23,10 +21,16 @@ class DiagramController {
 	this.model = new DiagramModel();
   }
   
+  addEthDevice(device) {
+	  device.name = `ethDev_${nextUidDevice}`;
+	  device.id = nextUidDevice++;
+	  this.actDeviceController = new ETHDeviceController(device);
+  }
+
   stopDragging() {
     if(this.target != undefined) {
       this.target.onDragEnd && this.target.onDragEnd();
-	}
+	  }
   }
 
   prepareTarget(event) {
@@ -65,7 +69,7 @@ class DiagramController {
       case "connector":
         this.target = connectorLookup[id];
         break;
-	}
+	  }
 
   }
 
@@ -84,25 +88,7 @@ class DiagramController {
     this.target.onDrag && this.target.onDrag();
   }
 }
-  
-//
-// NODE SHAPE
-// =========================================================================== 
-class ETHDiagramController {
 
-  constructor() {
-	this.actDeviceController = undefined;
-  }
-  
-  addEthDevice(device) {
-	  device.name = `ethDev_${nextUidDevice}`;
-	  device.id = nextUidDevice++;
-	  this.actDeviceController = new ETHDeviceController(device);
-  }
-}
-
-//
-// NODE SHAPE
 // =========================================================================== 
 class ETHDeviceController {
 
@@ -134,10 +120,9 @@ class ETHDeviceController {
 
     this.element = element;
     this.dragElement = element;
-	var x = this.actDeviceModel.x;
-	var y = this.actDeviceModel.y;
-	element.setAttribute("transform", "matrix(1, 0, 0, 1, " + x + ","+ y +" )");
-//    TweenLite.set(element, { x, y });
+	  var x = this.actDeviceModel.x;
+	  var y = this.actDeviceModel.y;
+	  element.setAttribute("transform", "matrix(1, 0, 0, 1, " + x + ","+ y +" )");
 
     const inputElements = Array.from(element.querySelectorAll(".input-field"));
     const inoutputElements = Array.from(element.querySelectorAll(".inoutput-field"));
@@ -169,7 +154,6 @@ class ETHDeviceController {
   }
 }
 
-const maincontroller = new ETHDiagramController();
 /*
 * all device controllers
 */
