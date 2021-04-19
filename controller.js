@@ -125,28 +125,29 @@ class ETHDeviceController {
 
     const inputElements = Array.from(element.querySelectorAll(".input-field"));
     const inoutputElements = Array.from(element.querySelectorAll(".inoutput-field"));
-
+/*
     this.inputs = inputElements.map(element => {
       const port = new NodePort(this, element, true);
-      portLookup[port.id] = port;
+      portLookup[port.identifier] = port;
       ports.push(port);
       return port;
     });
-
+*/
+    let nport = 0;
     this.inoutputs = inoutputElements.map(element => {
-      const port = new NodePort(this, element, false);
-      portLookup[port.id] = port;
+      const port = new NodePort(this, element, false, this.actDeviceModel.ports[nport++]);
+      portLookup[port.identifier] = port;
       ports.push(port);
       return port;
     });
   }
 
   onDrag() {
-
+/*
     for (let input of this.inputs) {
       input.update();
     }
-
+*/
     for (let inoutput of this.inoutputs) {
       inoutput.update();
     }
