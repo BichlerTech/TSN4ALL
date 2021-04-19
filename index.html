@@ -6,72 +6,173 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./w3.css">
+<script type="text/javascript" src="./json-viewer.js"></script>
+<link rel="stylesheet" type="text/css" href="./json-viewer.css"/>
+<link rel="stylesheet" type="text/css" href="./dist/css/dialog-mobile.css"/>
 <style>
 @media screen and (max-width: 455px) {
     .h3 {
         font-size:16px;
     }
 };
-
 </style>
-<script src="../W3.CSS-Dateien/request.js" type="text/javascript"></script>
-<script src="../W3.CSS-Dateien/script.js" type="text/javascript"></script>
+<script  src="./installedDevs/menuItems.js"></script>
 </head>
 <body>
 <div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-left" style="width: 190px; display: block;" id="mySidebar">
   <div class="w3-bar w3-dark-grey">
-  <span class="w3-bar-item w3-padding-16">dataHUB nano</span>
+  <span class="w3-bar-item w3-padding-16">TSN4All</span>
   <button onclick="w3_close()" class="w3-bar-item w3-button w3-right w3-padding-16" title="close Sidebar">×</button>
   </div>
-  <div class="w3-bar-block">
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X1', 1, null).add();">ETH X1</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X2', 2, null).add();">ETH X2</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X3', 3, null).add();">ETH X3</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X4', 4, null).add();">ETH X4</a>
-  <a class="w3-bar-item w3-button" href="javascript:new ETHDeviceView('BTech X5', 5, null).add();">ETH X5</a>
+  <div id="menu" class="w3-bar-block">
   <a class="w3-bar-item w3-button" href="javascript:save();">Export</a>
+  <a class="w3-bar-item w3-button" href="javascript:load();">Load</a>
   </div>
+<p id="contents"></p>
 </div>
 
-<div id="main" style="margin-left: 190px;">
+<div id="main" style="margin-left: 190px; margin-right: 200px;">
 <span title="open Sidebar" style="display:none; color: white;" id="openNav" class="w3-button w3-transparent w3-display-topleft w3-xlarge" onclick="w3_open()">&#9776;</span>
-<div id="main_graphics" style = "height:100%; display: block">
-<svg id="svg" style="width:100%; height:100%;">         
+<div id="main_graphics" style = "height:100%; display: block" overflow="auto">
+<svg id="svg" style="width:100%; height:100%;">
+<defs>
+      <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+        <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+        <rect width="80" height="80" fill="url(#smallGrid)"/>
+        <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <!-- arrowhead marker definition -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="20" refY="5"
+        markerWidth="6" markerHeight="6"
+        orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
   
-  <g id="diagram" data-drag="diagram:diagram" data-drag-type="diagram">     
+  <g id="diagram" data-drag="diagram:diagram" data-drag-type="diagram" fill="url(#grid)">     
     <g id="node-layer">      
     </g>
 
     <g id="connections-layer"></g>
 
-    <g class="connector">
-
-      <path class="connector-path-outline" />
-      <path class="connector-path" />
-
+     
+  </g>
+  <g class="connector">
+	  <polyline class="connector-path" onclick="properties.setNetProperties(this); invert(this)"/>
+	  <polyline class="connector-path-outline" />
+	  <circle class="connector-handle input-handle" cx="0" cy="0" r="4" />
+      <circle class="connector-handle inoutput-handle" cx="0" cy="0" r="4" />
+  </g>
+  <g class="connector-logical">
+	  <polyline class="connector-path-logical" marker-start="url(#arrow)" onclick="properties.setStreamProperties(this); invert(this)"/>
+	  <polyline class="connector-path-outline-logical"/>
       <circle class="connector-handle input-handle" cx="0" cy="0" r="4" />
       <circle class="connector-handle inoutput-handle" cx="0" cy="0" r="4" />
-    </g>
+   </g>
     
-    <circle id="drag-proxy" cx="0" cy="0" r="1" fill="none" />    
-  </g>
+    <circle id="drag-proxy" cx="0" cy="0" r="1" fill="none" />   
 </svg>
 </div>
 <div id="main_parameter" style = "height:100%; display: none;">
 paramter
 </div>
-<div id="main_result" style = "height:100%; display: none;">
-result
+<div id="main_model" style = "height:100%; display: none;">
+
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
+				<div id="modeljson" style="height: 100%; width: 100%;"></div>
+				
+				<script>
+					var modelObj = {};
+					var modelViewer = new JSONViewer();
+					document.querySelector("#modeljson").appendChild(modelViewer.getContainer());
+				</script>
+				<!--<textarea id="resultJSON" rows="100%" cols="100%"></textarea>-->
+			</div>
+			<!--<div class="gutter" style="width: 4px;"></div>
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
+				<textarea id="resultXML" rows="100%" cols="100%"></textarea>
+			</div>
+			-->
+		</div>
+	</div>
 </div>
+<div id="main_configuration" style = "height:100%; display: none;">
+
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
+				<div id="json" style="height: 100%; width: 100%;"></div>
+				
+				<script>
+					var jsonObj = {};
+					var jsonViewer = new JSONViewer();
+					document.querySelector("#json").appendChild(jsonViewer.getContainer());
+				</script>
+				<!--<textarea id="resultJSON" rows="100%" cols="100%"></textarea>-->
+			</div>
+			<!--<div class="gutter" style="width: 4px;"></div>
+			<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">
+				<textarea id="resultXML" rows="100%" cols="100%"></textarea>
+			</div>
+			-->
+		</div>
+	</div>
+</div>
+
+<div id="main_model2save" style = "height:100%; display: none;">
+
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+			<!--<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">-->
+			<div style="height: 100%; width: 100%;">
+				<textarea id="model2saveText" rows="100%" cols="100%"></textarea>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="https://metroui.org.ua/metro/js/metro.js?ver=@@b-version"></script>
+    
+
 <div class="w3-bar w3-black">
-  <button id="graphics" class="w3-bar-item w3-button" style="background-color: #1a1a1a;" onclick="switch2Graphics();">Graphics</button>
-  <button id="params" class="w3-bar-item w3-button" onclick="switch2Parameter();">Parameter</button>
-  <button id="result" class="w3-bar-item w3-button" onclick="switch2Result();">Result</button>
+  <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
+  <button id="params" class="w3-bar-item w3-button" onclick="switch2Logical();">logical</button>
+  <button id="model" class="w3-bar-item w3-button" onclick="switch2Model();">Model</button>
+  <button id="configuration" class="w3-bar-item w3-button" onclick="switch2Configuration();">Configuration</button>
+  <button id="model2save" class="w3-bar-item w3-button" onclick="switch2Model2Save();">Model2Save</button>
 </div>
+</div>
+<span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topright w3-xlarge" onclick="w3_openProperties()">&#9776;</span>
+<div class="w3-sidebar w3-light-grey w3-card-4 w3-animate-right" style="width: 250px; display: block; right: 0px;" id="myProperties">
+<div id="Properties-main">
+<div class="w3-bar w3-dark-grey">
+  <span class="w3-bar-item w3-padding-16">properties</span>
+  <button onclick="w3_closeProperties()" class="w3-bar-item w3-button w3-right w3-padding-16" title="close properties">×</button>
+  </div>
+  <div id="properties">
+  </div>
+</div>
+<div class="dialog-mobile-bg"></div>
+<div class="dialog-mobile animation-zoom-in" style="top: 257px; left: 618px;">
+  <div class="dialog-title">TSN Editor</div>
+  <div class="dialog-content-new" onclick="zoomOut(this);">New Project</div>
+  <div class="dialog-content-extproj">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load from Filesystem</div>
+  <div class="dialog-content-gitproj">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load from Github</div>
 </div>
 <!-- partial -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script><script  src="./script.js"></script>
-
+  <script src='./TweenLite.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script>
+<script  src="./models.js"></script>
+<script  src="./controller.js"></script>
+<script  src="./menu.js"></script>
+<script  src="./properties.js"></script>
+<script  src="./view.js"></script>
+<script  src="./ConnectorController.js"></script>
+<script  src="./script.js"></script>
 </body>
 </html>
