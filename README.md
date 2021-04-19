@@ -1,7 +1,8 @@
 # TSN4ALL
 A TSN (time sensitive networking) configuration tool to manage different ethernet devices in a local network.
+It is an open source implementation under the GPLv3 license.
 
-Test the actual editor on https://www.bichler.tech/download/tsn4all/
+The latest snapshot of the editor will published on https://www.bichler.tech/snapshot/tsn4all/
 
   ## Editor elements:
   The editor should constist of a menu bar, left or right to the main editor. The menu should contain all installes eth-devices.
