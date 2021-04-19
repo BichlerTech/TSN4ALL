@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./w3.css">
 <script type="text/javascript" src="./json-viewer.js"></script>
-<link rel="stylesheet" type="text/css" href="./json-viewer.css">
+<link rel="stylesheet" type="text/css" href="./json-viewer.css"/>
+<link rel="stylesheet" type="text/css" href="./dist/css/dialog-mobile.css"/>
 <style>
 @media screen and (max-width: 455px) {
     .h3 {
@@ -27,7 +28,6 @@
   <a class="w3-bar-item w3-button" href="javascript:save();">Export</a>
   <a class="w3-bar-item w3-button" href="javascript:load();">Load</a>
   </div>
-  <input type='file' onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))' />
 <p id="contents"></p>
 </div>
 
@@ -157,6 +157,13 @@ paramter
   <div id="properties">
   </div>
 </div>
+<div class="dialog-mobile-bg"></div>
+<div class="dialog-mobile animation-zoom-in" style="top: 257px; left: 618px;">
+  <div class="dialog-title">TSN Editor</div>
+  <div class="dialog-content-new" onclick="zoomOut(this);">New Project</div>
+  <div class="dialog-content-extproj">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load from Filesystem</div>
+  <div class="dialog-content-gitproj">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load from Github</div>
+</div>
 <!-- partial -->
   <script src='./TweenLite.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js'></script>
@@ -165,6 +172,7 @@ paramter
 <script  src="./menu.js"></script>
 <script  src="./properties.js"></script>
 <script  src="./view.js"></script>
+<script  src="./ConnectorController.js"></script>
 <script  src="./script.js"></script>
 </body>
 </html>

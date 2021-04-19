@@ -2,14 +2,19 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
   return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 
-var connectionType = "physical";
-
-function setPhysical() {
-	connectionType = "physical";
+function zoomOut(evt) {
+ 	evt.parentNode.previousElementSibling.remove();
+	evt.parentNode.classList.add('animation-zoom-out');
 }
 
-function setLogical() {
-	connectionType = "logical";
+var connectionCategory = "cable";
+
+function setCable() {
+	connectionCategory = "cable";
+}
+
+function setFlow() {
+	connectionCategory = "flow";
 }
 
 function exportPersistJSON() {
@@ -194,18 +199,36 @@ function load() {
 	var svg=document.getElementById("diagram");
 	
 	for(i = 0; i < defs.TSNNetwork.nodes.length; i++) {
-		maincontroller.addEthDevice(defs.TSNNetwork.nodes[i]);
+		diagram.addEthDevice(defs.TSNNetwork.nodes[i]);
 	}
+	for(i = 0; i < defs.TSNNetwork.edge.length; i++) {
+		let edge = defs.TSNNetwork.edge[i];
+		addConnection(edge);
+	}
+}
+
+function addConnection(edge) {
+	connectionCategory = edge.category;
+	const sport = portLookup[edge.sourcePortId];
+	const dport = portLookup[edge.destPortId];
+	sport.createConnector();
 	
-	//svg.innerHTML  = defs;
-	//init();
+	// get connector from port
+	let connector = sport.lastConnector;
+	connector.inputPort = sport;
+	connector.inoutputPort = dport;
+	dport.addConnector(connector);
+	//connector.placeHandle();
+	connector.updateHandle(dport);
+   // this.target = port.lastConnector;
+   // this.dragType = this.target.dragType;
 }
 
 function switch2Physical() {
+	setCable();
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_configuration').style.display = 'none';
-	setPhysical();
 	
 	document.getElementById('graphics').style.backgroundColor = '#616161 ';
 	document.getElementById('params').style.backgroundColor = 'black';
@@ -214,7 +237,7 @@ function switch2Physical() {
 }
 
 function switch2Logical() {
-	setLogical();
+	setFlow();
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'block';
 	document.getElementById('main_configuration').style.display = 'none';
@@ -275,246 +298,6 @@ function switch2Model2Save() {
 	document.getElementById('model2save').style.backgroundColor = '#616161';
 }
 
-//
-// CONNECTOR
-// ===========================================================================
-class ConnectorController {
-
-  constructor(connectionType) {
-
-    this.dragType = "connector";
-    this.isSelected = false;
-    
-	this.connectionType = connectionType;
-	if(connectionType == "physical") {
-		this.element = connectorElement.cloneNode(true);
-		this.model = new PhysicalConnection();
-		this.model.name = `Connector_${connectorUid}`;
-		this.model.id = connectorUid++;
-		connections[this.model.name] = this;
-	}
-	else {
-		this.element = connectorStreamElement.cloneNode(true);
-		this.model = new StreamConnection();
-		this.model.name = `Connector_${connectorUid}`;
-		this.model.id = connectorUid++;
-		streams[this.model.name] = this;
-	}
-	selectedStream = this;
-	if(connectionType == "physical") {
-		this.path = this.element.querySelector(".connector-path");
-		this.pathOutline = this.element.querySelector(".connector-path-outline");
-	}
-	else {
-		this.path = this.element.querySelector(".connector-path-logical");
-		this.pathOutline = this.element.querySelector(".connector-path-outline-logical");
-	}
-    
-    this.inputHandle = this.element.querySelector(".input-handle");
-    this.inoutputHandle = this.element.querySelector(".inoutput-handle");
-	this.startelement = null;
-	this.endElement = null;
-  }
-
-  init(port) {
-    connectorLayer.appendChild(this.element);
-    this.isInput = port.isInput;
-
-    if (port.isInput) {
-      this.inputPort = port;
-      this.dragElement = this.inoutputHandle;
-      this.staticElement = this.inputHandle;
-    } else {
-      this.inoutputPort = port;
-      this.dragElement = this.inputHandle;
-      this.staticElement = this.inoutputHandle;
-    }
-
-    this.staticPort = port;
-    this.dragElement.setAttribute("data-drag", `${this.id}:connector`);
-    this.staticElement.setAttribute("data-drag", `${port.id}:port`);
-
-    TweenLite.set([this.inputHandle, this.inoutputHandle], {
-      x: port.global.x,
-      y: port.global.y });
-  }
-
-  updatePath() {
-
-    const x1 = this.inputHandle._gsTransform.x;
-    const y1 = this.inputHandle._gsTransform.y;
-    const x4 = this.inoutputHandle._gsTransform.x;
-    const y4 = this.inoutputHandle._gsTransform.y;
-
-	var p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y = 0;
-	
-	if(x1 < x4) {
-		//from right to left
-		p0x = x1;
-		p0y = y1;
-		
-		p1x = x1 + (x4 - x1)/2;
-		p1y = y1;
-
-		p2x = x4 - (x4 - x1)/2;
-		p2y = y4 + 10;
-
-		p3x = x4;
-		p3y = y4 + 10;
-		
-		p4x = x4;
-		p4y = y4;
-	} else {
-		//from left to right
-		p0x = x1;
-		p0y = y1;
-		
-		p1x = x1;
-		p1y = y1 + 10;
-
-		p2x = x4 - (x4 - x1)/2;
-		p2y = y1 + 10;
-
-		p3x = x4 - (x4 - x1)/2;
-		p3y = y4;
-		
-		p4x = x4;
-		p4y = y4;
-	}
-
-	const data = `${p0x} ${p0y} ${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
-	this.path.setAttribute("points", data);
-    this.pathOutline.setAttribute("points", data);
-	this.path.setAttribute("id", this.model.name);
-  }
-  
-  updatePathLogical() {
-
-    const x1 = this.inputHandle._gsTransform.x;
-    const y1 = this.inputHandle._gsTransform.y;
-    const x4 = this.inoutputHandle._gsTransform.x;
-    const y4 = this.inoutputHandle._gsTransform.y;
-    var dx = 50;
-	
-	if(dx > 70)
-		dx = 70;
-	
-	var x = 0;
-	
-	// test rightmost point
-	x1 > x4? x = x1 : x = x4;
-
-    const p1x = x1;
-    const p1y = y1;
-
-	const p2x = x + dx;
-    const p2y = y1;
-
-	const p3x = x + dx;
-    const p3y = y4;
-	
-	const p4x = x4;
-    const p4y = y4;
-
-    const data = `${p1x} ${p1y} ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`;
-	this.path.setAttribute("points", data);
-    this.pathOutline.setAttribute("points", data);
-	this.path.setAttribute("id", this.model.name);
-  }
-
-  updateHandle(port) {
-
-    if (port === this.inputPort) {
-		this.inputHandle.setAttribute("transform", "matrix(1, 0, 0, 1, " + port.global.x + ", " + port.global.y + ")");
-		this.inputHandle._gsTransform.x = port.global.x;
-		this.inputHandle._gsTransform.y = port.global.y;
-    } else if (port === this.inoutputPort) {
-		this.inoutputHandle.setAttribute("transform", "matrix(1, 0, 0, 1, " + port.global.x + ", " + port.global.y + ")");
-		this.inoutputHandle._gsTransform.x = port.global.x;
-		this.inoutputHandle._gsTransform.y = port.global.y;
-    }
-
-	if(this.connectionType == "physical")
-		this.updatePath();
-	else
-		this.updatePathLogical();
-  }
-
-  placeHandle() {
-
-    const skipShape = this.staticPort.parentNode.element;
-
-    let hitPort;
-
-    for (let device of devices) {
-      if (device.element === skipShape) {
-        continue;
-      }
-      if (Draggable.hitTest(this.dragElement, device.element)) {
-		const ports = device.inoutputs;
-        for (let port of ports) {
-          if (Draggable.hitTest(this.dragElement, port.portElement)) {
-            hitPort = port;
-            break;
-          }
-        }
-        if (hitPort) {
-          break;
-        }
-      }
-    }
-
-    if (hitPort) {
-
-      if (this.isInput) {
-        this.inoutputPort = hitPort;
-      } else {
-        this.inputPort = hitPort;
-      }
-
-      this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
-      hitPort.addConnector(this);
-      this.updateHandle(hitPort);
-    } else {
-      this.remove();
-    }
-  }
-
-  remove() {
-    if (this.inputPort) {
-      this.inputPort.removeConnector(this);
-    }
-    if (this.inoutputPort) {
-      this.inoutputPort.removeConnector(this);
-    }
-
-    this.isSelected = false;
-    this.path.removeAttribute("d");
-    this.pathOutline.removeAttribute("d");
-    this.dragElement.removeAttribute("data-drag");
-    this.staticElement.removeAttribute("data-drag");
-
-    this.staticPort = null;
-    this.inputPort = null;
-    this.inoutputPort = null;
-    this.dragElement = null;
-    this.staticElement = null;
-
-    connectorLayer.removeChild(this.element);
-    connectorPool.push(this);
-  }
-
-  onDrag() {
-    if(this.connectionType == "physical")
-		this.updatePath();
-	else
-		this.updatePathLogical();
-  }
-
-  onDragEnd() {
-    this.placeHandle();
-  }}
-
 
 //
 // NODE PORT
@@ -551,15 +334,15 @@ class NodePort {
 
   createConnector() {
 
-    let connector;
-
+    let connector = new ConnectorController(connectionCategory);
+/*
     if (connectorPool.length) {
       connector = connectorPool.pop();
       connectorLookup[connector.id] = connector;
     } else {
-      connector = new ConnectorController(connectionType);
+      connector = new ConnectorController(connectionCategory);
     }
-
+*/
     connector.init(this);
     this.lastConnector = connector;
     this.connectors.push(connector);
@@ -628,7 +411,7 @@ const portLookup = {};
 const connectorLookup = {};
 
 const ports = []; 
-const connectorPool = [];
+//const connectorPool = [];
 
 var svg;
 var diagramElement;
