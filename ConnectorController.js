@@ -53,7 +53,7 @@ class ConnectorController {
   
       this.staticPort = port;
       this.dragElement.setAttribute("data-drag", `${this.id}:connector`);
-      this.staticElement.setAttribute("data-drag", `${port.id}:port`);
+      this.staticElement.setAttribute("data-drag", `${port.identifier}:port`);
   
       TweenLite.set([this.inputHandle, this.inoutputHandle], {
         x: port.global.x,
@@ -182,7 +182,7 @@ class ConnectorController {
           this.inputPort = hitPort;
         }
   
-        this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
+        this.dragElement.setAttribute("data-drag", `${hitPort.identifier}:port`);
         hitPort.addConnector(this);
         this.updateHandle(hitPort);
       } else {

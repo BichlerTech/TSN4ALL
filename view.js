@@ -127,7 +127,8 @@ class ETHDeviceView {
 		oport.setAttribute('cy', '10');
 		oport.setAttribute('r', '7.5');
 		oport.setAttribute('data-clickable', 'false');
-		oport.setAttribute('data-drag', 'port_5:port');
+		port.identifier = nextUid++;
+		oport.setAttribute('data-drag', port.identifier + ':port');
 		innerinput.appendChild(oport);
 		
 		var innertext = document.createElementNS("http://www.w3.org/2000/svg", "text");
