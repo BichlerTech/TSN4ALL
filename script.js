@@ -2,6 +2,11 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
   return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 
+function zoomOut(evt) {
+ 	evt.parentNode.previousElementSibling.remove();
+	evt.parentNode.classList.add('animation-zoom-out');
+}
+
 var connectionCategory = "cable";
 
 function setCable() {
@@ -198,23 +203,32 @@ function load() {
 	}
 	for(i = 0; i < defs.TSNNetwork.edge.length; i++) {
 		let edge = defs.TSNNetwork.edge[i];
-		connectionCategory = edge.category;
-		const port = portLookup[edge.sourcePortId];
-		port.createConnector();
-		
-		// get connector from port
-		let connector = port.lastConnector;
-		connector.placeHandle();
-       // this.target = port.lastConnector;
-       // this.dragType = this.target.dragType;
+		addConnection(edge);
 	}
 }
 
+function addConnection(edge) {
+	connectionCategory = edge.category;
+	const sport = portLookup[edge.sourcePortId];
+	const dport = portLookup[edge.destPortId];
+	sport.createConnector();
+	
+	// get connector from port
+	let connector = sport.lastConnector;
+	connector.inputPort = sport;
+	connector.inoutputPort = dport;
+	dport.addConnector(connector);
+	//connector.placeHandle();
+	connector.updateHandle(dport);
+   // this.target = port.lastConnector;
+   // this.dragType = this.target.dragType;
+}
+
 function switch2Physical() {
+	setCable();
 	document.getElementById('main_graphics').style.display = 'block';
 	//document.getElementById('main_parameter').style.display = 'none';
 	document.getElementById('main_configuration').style.display = 'none';
-	setCable();
 	
 	document.getElementById('graphics').style.backgroundColor = '#616161 ';
 	document.getElementById('params').style.backgroundColor = 'black';
@@ -320,15 +334,15 @@ class NodePort {
 
   createConnector() {
 
-    let connector;
-
+    let connector = new ConnectorController(connectionCategory);
+/*
     if (connectorPool.length) {
       connector = connectorPool.pop();
       connectorLookup[connector.id] = connector;
     } else {
       connector = new ConnectorController(connectionCategory);
     }
-
+*/
     connector.init(this);
     this.lastConnector = connector;
     this.connectors.push(connector);
@@ -397,7 +411,7 @@ const portLookup = {};
 const connectorLookup = {};
 
 const ports = []; 
-const connectorPool = [];
+//const connectorPool = [];
 
 var svg;
 var diagramElement;

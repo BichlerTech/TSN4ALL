@@ -211,7 +211,8 @@ class ConnectorController {
       this.staticElement = null;
   
       connectorLayer.removeChild(this.element);
-      connectorPool.push(this);
+      delete connections[this.model.name];
+//        if (index > -1) connections.splice(index, 1);
     }
   
     onDrag() {

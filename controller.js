@@ -60,7 +60,6 @@ class DiagramController {
 
       case "port":
         const port = portLookup[id];
-		console.log("create connector!");
         port.createConnector();
         this.target = port.lastConnector;
         this.dragType = this.target.dragType;
