@@ -208,6 +208,97 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	  }
   }
   
+  function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+  }
+
+  function loadScheduling() {
+	let text = document.getElementById("schedule2showText").value;
+	let rowheight = 100;
+	let queues = 8;
+	let parser = new DOMParser();
+	xmlDoc = parser.parseFromString(text,"text/xml");
+	let controllist = xmlDoc.getElementsByTagName("admin-control-list");
+	rowheight /= controllist.length;
+	let scheduleDiv = document.getElementById("schedTable");
+	removeAllChildNodes(scheduleDiv);
+	let scheduleTable = document.createElement("table");
+	//scheduleTable.setAttribute("height", "100%");
+	//scheduleTable.setAttribute("width", "100%");
+	scheduleDiv.appendChild(scheduleTable);
+	let scheduleTBody = document.createElement("tbody");
+	scheduleTable.appendChild(scheduleTBody);
+	// add table header
+	let scheduleRow = document.createElement("tr");
+		scheduleRow.setAttribute("height", "30px");
+		scheduleTBody.appendChild(scheduleRow);
+	for(var queue = 0; queue < queues + 2; queue++) {
+		let scheduleCol = document.createElement("td");
+		scheduleRow.appendChild(scheduleCol);
+		scheduleCol.setAttribute("width", "30px");
+		if(queue > 0 && queue < queues + 1) {
+			scheduleCol.style.textAlign = "center";
+			scheduleCol.innerText = queue - 1;
+		}
+	}
+	let time = 0;
+	for(var i = 0; i < controllist.length; i++) {
+		let scheduleRow = document.createElement("tr");
+		scheduleRow.setAttribute("height", "30px");
+		//scheduleRow.setAttribute("width", "100%");
+		scheduleTBody.appendChild(scheduleRow);
+		let gsv = controllist[i].getElementsByTagName("gate-states-value");
+		let tiv = controllist[i].getElementsByTagName("time-interval-value");
+		let gs = gsv[0].textContent;
+
+		let bit = 1;
+		for(var queue = 0; queue < queues + 2; queue++) {
+			if(queue == 0) {
+				// first column
+				let scheduleCol = document.createElement("td");
+				scheduleRow.appendChild(scheduleCol);
+				scheduleCol.style.textAlign = "right";
+				scheduleCol.style.verticalAlign = "top";
+				scheduleCol.innerText = time;
+				time = time + parseInt(tiv[0].textContent);
+			} else if(queue == queues + 1) {
+				// last column
+				let scheduleCol = document.createElement("td");
+				scheduleRow.appendChild(scheduleCol);
+				scheduleCol.innerText = tiv[0].textContent;
+			}	else {
+				let scheduleCol = document.createElement("td");
+				scheduleRow.appendChild(scheduleCol);
+				scheduleCol.setAttribute("width", "30px");
+				if((gs & bit) == 0) {
+					scheduleCol.style.backgroundColor = "lightgray";
+				} else {
+					scheduleCol.style.backgroundColor = "green";
+				}
+				// shift bit
+				bit = bit << 1;
+			}
+		}
+	}
+	// print unrequired footer
+	 scheduleRow = document.createElement("tr");
+		scheduleRow.setAttribute("height", "30px");
+		scheduleTBody.appendChild(scheduleRow);
+	for(var queue = 0; queue < queues + 2; queue++) {
+		let scheduleCol = document.createElement("td");
+		scheduleRow.appendChild(scheduleCol);
+		scheduleCol.setAttribute("width", "30px");
+		scheduleCol.setAttribute("heigth", "30px");
+		if(queue == 0) {
+			scheduleCol.style.textAlign = "right";
+			scheduleCol.style.verticalAlign = "top";
+			scheduleCol.innerText = time;
+		}
+	}
+  }
+
   function addConnection(edge) {
 	  connectionCategory = edge.category;
 	  const sport = portLookup[edge.sourcePortId];
@@ -322,6 +413,26 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	  document.getElementById('model2save').style.backgroundColor = 'black';
 	  document.getElementById('config2save').style.backgroundColor = '#616161';
   }
+
+  function switch2Schedule2Show() {
+	//loadScheduling();
+	
+	document.getElementById('main_graphics').style.display = 'none';
+	document.getElementById('main_parameter').style.display = 'none';
+	document.getElementById('main_model').style.display = 'none';
+	document.getElementById('main_configuration').style.display = 'none';
+	document.getElementById('main_model2save').style.display = 'none';
+	document.getElementById('main_config2save').style.display = 'none';
+	document.getElementById('main_schedule2show').style.display = 'block';
+	
+	document.getElementById('graphics').style.backgroundColor = 'black';
+	document.getElementById('params').style.backgroundColor = 'black';
+	document.getElementById('model').style.backgroundColor = 'black ';
+	document.getElementById('configuration').style.backgroundColor = 'black ';
+	document.getElementById('model2save').style.backgroundColor = 'black';
+	document.getElementById('config2save').style.backgroundColor = 'black';
+	document.getElementById('schedule2show').style.backgroundColor = '#616161';
+}
   
   //
   // NODE PORT
