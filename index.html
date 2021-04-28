@@ -141,14 +141,24 @@ paramter
 		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
 			<!--<div class="d-flex flex-justify-center flex-align-center split-block" style="flex-basis: calc(50% - 4px); height: 100%; overflow-y: auto;">-->
 			<div style="height: 100%; width: 100%;">
-				<textarea id="config2saveText" rows="100%" cols="100%"></textarea>
+				<textarea id="config2saveText" rows="100%" cols="100%" ></textarea>
 			</div>
 		</div>
 	</div>
 </div>
+<div id="main_schedule2show" style = "height:100%; display: none;">
 
-<script src="https://metroui.org.ua/metro/js/metro.js?ver=@@b-version"></script>
-    
+	<div class="example p-0" style="height: 100%">
+		<div data-role="splitter" class="">
+			<div style="height: 100%; width: 100%;">
+        <div id="schedTable" style="width: 30%; float: left;"></div>
+        <div style="width: 70%; float: left;">
+				  <textarea id="schedule2showText" style="font-size: 12px;" rows="100%" cols="100%" oninput="loadScheduling();"></textarea>
+        </div>
+			</div>
+		</div>
+	</div>
+</div>    
 
 <div class="w3-bar w3-black">
   <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
@@ -157,6 +167,7 @@ paramter
   <button id="configuration" class="w3-bar-item w3-button" onclick="switch2Configuration();">Configuration</button>
   <button id="model2save" class="w3-bar-item w3-button" onclick="switch2Model2Save();">Model2Save</button>
   <button id="config2save" class="w3-bar-item w3-button" onclick="switch2Config2Save();">Config2Save</button>
+  <button id="schedule2show" class="w3-bar-item w3-button" onclick="switch2Schedule2Show();">Schedule2Show</button>
 </div>
 </div>
 <span title="open Properties" style="display:none; color: white;" id="openProps" class="w3-button w3-transparent w3-display-topright w3-xlarge" onclick="w3_openProperties()">&#9776;</span>
