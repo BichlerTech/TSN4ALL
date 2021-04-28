@@ -149,17 +149,16 @@ paramter
 <div id="main_schedule2show" style = "height:100%; display: none;">
 
 	<div class="example p-0" style="height: 100%">
-		<div data-role="splitter" class="h-100 splitter" data-role-splitter="true">
+		<div data-role="splitter" class="">
 			<div style="height: 100%; width: 100%;">
-        <div id="schedTable" ></div>
-				<textarea id="schedule2showText" rows="100%" cols="100%" oninput="loadScheduling();"></textarea>
+        <div id="schedTable" style="width: 30%; float: left;"></div>
+        <div style="width: 70%; float: left;">
+				  <textarea id="schedule2showText" style="font-size: 12px;" rows="100%" cols="100%" oninput="loadScheduling();"></textarea>
+        </div>
 			</div>
 		</div>
 	</div>
-</div>
-
-<!-- <script src="https://metroui.org.ua/metro/js/metro.js?ver=@@b-version"></script>-->
-    
+</div>    
 
 <div class="w3-bar w3-black">
   <button id="graphics" class="w3-bar-item w3-button" style="background-color: #616161 ;" onclick="switch2Physical();">physical</button>
