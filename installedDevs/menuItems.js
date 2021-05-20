@@ -81,7 +81,7 @@ var items = [
 { "name": "dev_tttech",
   "type": "dev_ethx5",
   "category": "switch",
-  "portcount": 4,
+  "portcount": 3,
   "ports": [
   {
 	  "name": "sw0p3",
