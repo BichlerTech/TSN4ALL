@@ -77,5 +77,26 @@ var items = [
 	  "property" : "irgendwas"
   }],
   "image" : "btech_tsn_x4.png"
+},
+{ "name": "dev_tttech",
+  "type": "dev_ethx5",
+  "category": "switch",
+  "portcount": 4,
+  "ports": [
+  {
+	  "name": "sw0p3",
+	  "id": 3,
+	  "property" : "irgendwas"
+  },{
+	  "name": "sw0p4",
+	  "id": 4,
+	  "property" : "irgendwas"
+  },{
+	  "name": "sw0p5",
+	  "id": 5,
+	  "property" : "irgendwas"
+  }
+  ],
+  "image" : "btech_tsn_x4.png"
 }
 ];
