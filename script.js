@@ -406,7 +406,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	   alert(this.responseText);
          }
       };
-      xmlhttp.open("GET", "php/index.php?q=" + str, true);
+      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?q=" + str, true);
       xmlhttp.send();
     }
   }
