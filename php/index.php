@@ -1,6 +1,6 @@
 <?php
 // Array with names
 $q = $_REQUEST["q"];
-$q = " und du";
+$q = "ich und du";
 echo $q;
 ?>
