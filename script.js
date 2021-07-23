@@ -392,6 +392,23 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	  document.getElementById('model').style.backgroundColor = 'black ';
 	  document.getElementById('configuration').style.backgroundColor = 'black ';
 	  document.getElementById('model2save').style.backgroundColor = '#616161';
+	  persistAjax(content);
+  }
+
+  function persistAjax(str) {
+    if (str.length == 0) {
+      //document.getElementById("txtHint").innerHTML = "";
+      return;
+    } else {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+           document.getElementById("txtHint").innerHTML = this.responseText;
+         }
+      };
+      xmlhttp.open("GET", "gethint.php?q=" + str, true);
+      xmlhttp.send();
+    }
   }
   
   function switch2Config2Save() {
