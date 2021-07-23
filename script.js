@@ -406,7 +406,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
            document.getElementById("txtHint").innerHTML = this.responseText;
          }
       };
-      xmlhttp.open("GET", "gethint.php?q=" + str, true);
+      xmlhttp.open("GET", "index.php?q=" + str, true);
       xmlhttp.send();
     }
   }
