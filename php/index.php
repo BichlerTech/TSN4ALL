@@ -1,4 +1,5 @@
 <?php
 // Array with names
-echo "no suggestion";
+$q = $_REQUEST["q"];
+echo $q;
 ?>
