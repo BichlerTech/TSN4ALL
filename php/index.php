@@ -2,5 +2,5 @@
 // Array with names
 $q = $_REQUEST["q"];
 $q = "ich und du";
-echo $q;
+echo "ich und du";
 ?>
