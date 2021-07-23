@@ -403,9 +403,10 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
          if (this.readyState == 4 && this.status == 200) {
-	   alert(this.responseText);
+	   alert("test: " + this.responseText);
          }
       };
+	    alert(str);
       xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?q=" + str, true);
       xmlhttp.send();
     }
