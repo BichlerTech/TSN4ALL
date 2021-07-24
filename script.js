@@ -392,10 +392,10 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	  document.getElementById('model').style.backgroundColor = 'black ';
 	  document.getElementById('configuration').style.backgroundColor = 'black ';
 	  document.getElementById('model2save').style.backgroundColor = '#616161';
-	  persistAjax(content);
+	  persistModelAjax(content);
   }
 
-  function persistAjax(str) {
+  function persistModelAjax(str) {
     if (str.length == 0) {
       //document.getElementById("txtHint").innerHTML = "";
       return;
@@ -430,6 +430,24 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	  document.getElementById('configuration').style.backgroundColor = 'black ';
 	  document.getElementById('model2save').style.backgroundColor = 'black';
 	  document.getElementById('config2save').style.backgroundColor = '#616161';
+	  persistConfigAjax(content);
+  }
+
+function persistConfigAjax(str) {
+    if (str.length == 0) {
+      //document.getElementById("txtHint").innerHTML = "";
+      return;
+    } else {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+	   alert("test: " + this.responseText);
+         }
+      };
+	    alert(str);
+      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?q=" + str, true);
+      xmlhttp.send();
+    }
   }
 
   function switch2Schedule2Show() {
