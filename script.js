@@ -1,6 +1,15 @@
 SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function (toElement) {
 	return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
   };
+
+window.onbeforeunload = function() {
+	alert("reload");
+    if (unloadCheck) {
+        return "Sie verlieren ggf. Ihre letzten, nicht gespeicherten Eingaben!";
+    } else {
+        return;
+    }
+}
   
   function zoomOut(evt) {
 	   evt.parentNode.previousElementSibling.remove();
