@@ -21,7 +21,7 @@ function closeIt(event)
 	event.returnValue = false;
             event.keyCode = 0;
             window.status = "We have disabled F5";
-            break;
+            
 }
 window.onbeforeunload = closeIt;
   
