@@ -407,7 +407,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
          }
       };
 	    alert(str);
-      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?q=" + str, true);
+      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?req=model&q=" + str, true);
       xmlhttp.send();
     }
   }
@@ -445,7 +445,7 @@ function persistConfigAjax(str) {
          }
       };
 	    alert(str);
-      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?q=" + str, true);
+      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?req=config&q=" + str, true);
       xmlhttp.send();
     }
   }
