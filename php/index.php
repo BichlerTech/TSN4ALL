@@ -4,7 +4,7 @@ $req = $_REQUEST["req"];
 $q = $_REQUEST["q"];
 //$q = "ich und du";
 if($req == "config")
-  echo "ccccc";
+  echo file_get_contents ("output");
 else
   echo $req;
 ?>
