@@ -441,8 +441,8 @@ function persistConfigAjax(str) {
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
          if (this.readyState == 4 && this.status == 200) {
-	  // document.getElementById("schedule2showText").value = this.responseText;
-	  // loadScheduling();
+	   document.getElementById("schedule2showText").value = this.responseText;
+	   loadScheduling();
             //document.getElementById().
 	   // alert("test: " + this.responseText);
          }
