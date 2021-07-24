@@ -2,7 +2,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
   };
 
-document.addEventListener("onkeydown", my_onkeydown_handler);
+document.onkeydown = my_onkeydown_handler;
 function my_onkeydown_handler(event) {
 	alert("F5");
     switch (event.keyCode) {
