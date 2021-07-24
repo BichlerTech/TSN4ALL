@@ -3,5 +3,8 @@
 $req = $_REQUEST["req"];
 $q = $_REQUEST["q"];
 //$q = "ich und du";
-echo $req;
+if($req == "config")
+  echo "ccccc";
+else
+  echo $req;
 ?>
