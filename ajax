@@ -441,10 +441,13 @@ function persistConfigAjax(str) {
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
          if (this.readyState == 4 && this.status == 200) {
-	   alert("test: " + this.responseText);
+	   document.getElementById("schedule2showText").value = this.responseText;
+	   loadScheduling();
+            //document.getElementById().
+	   // alert("test: " + this.responseText);
          }
       };
-	    alert(str);
+	//    alert(str);
       xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?req=config&q=" + str, true);
       xmlhttp.send();
     }
