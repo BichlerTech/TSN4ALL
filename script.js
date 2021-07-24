@@ -19,7 +19,7 @@ function closeIt()
 {
   alert("Any string value");
 }
-window.onbeforeunload = closeIt;
+window.onbeforeunload = my_onkeydown_handler;
   
   function zoomOut(evt) {
 	   evt.parentNode.previousElementSibling.remove();
