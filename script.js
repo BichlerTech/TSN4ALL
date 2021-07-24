@@ -2,9 +2,15 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 	return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
   };
 
-window.onbeforeunload = function() {
-	alert("reload");
-	return "Sie verlieren ggf. Ihre letzten, nicht gespeicherten Eingaben!";
+document.attachEvent("onkeydown", my_onkeydown_handler);
+function my_onkeydown_handler() {
+    switch (event.keyCode) {
+        case 116 : // 'F5'
+            event.returnValue = false;
+            event.keyCode = 0;
+            window.status = "We have disabled F5";
+            break;
+    }
 }
   
   function zoomOut(evt) {
