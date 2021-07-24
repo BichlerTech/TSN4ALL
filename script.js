@@ -15,6 +15,12 @@ function my_onkeydown_handler(event) {
             break;
     }
 }
+
+function closeIt()
+{
+  alert("Any string value");
+}
+window.onbeforeunload = closeIt;
   
   function zoomOut(evt) {
 	   evt.parentNode.previousElementSibling.remove();
