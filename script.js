@@ -4,11 +4,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 
 window.onbeforeunload = function() {
 	alert("reload");
-    if (unloadCheck) {
-        return "Sie verlieren ggf. Ihre letzten, nicht gespeicherten Eingaben!";
-    } else {
-        return;
-    }
+	return "Sie verlieren ggf. Ihre letzten, nicht gespeicherten Eingaben!";
 }
   
   function zoomOut(evt) {
