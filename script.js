@@ -3,7 +3,6 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
   };
 
 document.onkeydown = my_onkeydown_handler;
-window.onbeforeunload = my_onkeydown_handler;
 
 function my_onkeydown_handler(event) {
 	alert("F5");
