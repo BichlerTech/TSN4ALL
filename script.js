@@ -4,6 +4,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 
 document.addEventListener("onkeydown", my_onkeydown_handler);
 function my_onkeydown_handler(event) {
+	alert("F5");
     switch (event.keyCode) {
         case 116 : // 'F5'
             event.returnValue = false;
