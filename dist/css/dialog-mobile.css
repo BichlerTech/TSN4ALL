@@ -47,7 +47,7 @@
   border-radius: 5px 5px 0 0;
   word-break: break-word;
   position: relative;
-  background-image: url('../../fs.png');
+  background-image: url('../../git.png');
   background-position: left;
   background-repeat: no-repeat;
   margin-left: 20px;
@@ -56,17 +56,17 @@
 }
 .dialog-mobile .dialog-content-extproj {
   padding: 2.5em 1em;
-  text-align: center ;
+  text-align: center;
   color: #000000;
+  font-weight: 900;
   border-radius: 5px 5px 0 0;
   word-break: break-word;
   position: relative;
+  cursor: pointer;
   background-image: url('../../fs.png');
   background-position: left;
   background-repeat: no-repeat;
   margin-left: 20px;
-  -webkit-filter: opacity(.5);
-  filter: opacity(.5);
 }
 .dialog-mobile .dialog-content-new {
   padding: 2.5em 1em;
