@@ -15,11 +15,15 @@ function my_onkeydown_handler(event) {
     }
 }
 
-function closeIt()
+function closeIt(event)
 {
   alert("Any string value");
+	event.returnValue = false;
+            event.keyCode = 0;
+            window.status = "We have disabled F5";
+            break;
 }
-window.onbeforeunload = my_onkeydown_handler;
+window.onbeforeunload = closeIt;
   
   function zoomOut(evt) {
 	   evt.parentNode.previousElementSibling.remove();
