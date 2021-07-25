@@ -161,7 +161,7 @@ function zoomIn(evt) {
 	  return content;
   }
   
-  function save() {
+/*  function save() {
 	  var devices_=document.getElementById("diagram");
 	  //alert(devices_.innerHTML);
 	  let content = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -204,7 +204,7 @@ function zoomIn(evt) {
 	  let result = document.getElementById('resultXML');
 	 // result.value = content;
 	  save2FS();
-  }
+  } */
   
 function save2FS() {
 	 let content = exportPersistJSON();
