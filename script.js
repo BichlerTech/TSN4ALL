@@ -202,7 +202,7 @@ function zoomIn(evt) {
 	  
 	  content += '</TSNNetwork>';
 	  let result = document.getElementById('resultXML');
-	  result.value = content;
+	 // result.value = content;
 	  save2FS();
   }
   
