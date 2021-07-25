@@ -30,7 +30,7 @@ window.onbeforeunload = closeIt;
 	  evt.parentNode.classList.add('animation-zoom-out');
   }
 
-function zoomIn(evt) {
+function zoomIn() {
 	   //evt.parentNode.previousElementSibling.remove();
 	  document.getElementById("dialog-mobile").classList.remove('animation-zoom-out');
   }
@@ -207,6 +207,7 @@ function zoomIn(evt) {
   } */
   
 function save2FS() {
+	zoomIn();
 	 let content = exportPersistJSON();
 	  persistModelAjax(content);
 }
