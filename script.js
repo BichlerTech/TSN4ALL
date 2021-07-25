@@ -29,6 +29,11 @@ window.onbeforeunload = closeIt;
 	   evt.parentNode.previousElementSibling.remove();
 	  evt.parentNode.classList.add('animation-zoom-out');
   }
+
+function zoomIn(evt) {
+	   //evt.parentNode.previousElementSibling.remove();
+	  document.getElementById("dialog-mobile").classList.remove('animation-zoom-out');
+  }
   
   var connectionCategory = "cable";
   
