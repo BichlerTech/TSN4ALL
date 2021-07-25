@@ -1,11 +1,10 @@
 
 <?php
 // Array with names
-$req = $_REQUEST["req"];
-$q = $_REQUEST["q"];
+$command = $_REQUEST["command"];
 //$q = "ich und du";
-if($req == "config")
-  echo file_get_contents ("../");
+if($command == "project")
+  echo file_get_contents ("../projects/project.dat");
 else
   echo $req;
 ?>
