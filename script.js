@@ -440,8 +440,8 @@ function save2FS() {
 	   alert("test: " + this.responseText);
          }
       };
-	    alert(str);
-      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/index.php?req=model&q=" + str, true);
+	    //alert(str);
+      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/save.php?command=project&value=" + str, true);
       xmlhttp.send();
     }
   }
