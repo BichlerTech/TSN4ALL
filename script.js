@@ -207,8 +207,9 @@ function zoomIn() {
   } */
   
 function save2FS() {
-	zoomIn();
+	//zoomIn();
 	 let content = exportPersistJSON();
+	alert(content);
 	  persistModelAjax(content);
 }
   /*
@@ -447,7 +448,6 @@ function loadProjectAjax() {
 
   function persistModelAjax(str) {
     if (str.length == 0) {
-      //document.getElementById("txtHint").innerHTML = "";
       return;
     } else {
       var xmlhttp = new XMLHttpRequest();
