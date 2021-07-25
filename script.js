@@ -226,10 +226,10 @@ function save2FS() {
 	  }*/
   }
   
-  function load() {
-	  let devices_ = 'var defs =';
-	  devices_	+= document.getElementById('model2saveText').value;
-	  devices_	+= ';';
+  function load(devices_) {
+	  //let devices_ = 'var defs =';
+	  //devices_	+= document.getElementById('model2saveText').value;
+	  //devices_	+= ';';
 	  eval(devices_);
 	  var svg=document.getElementById("diagram");
 	  
@@ -249,6 +249,7 @@ function loadProjectAjax() {
 	   alert("test: " + this.responseText);
 	   let devices_ = 'var defs =';
 	   devices_ += this.responseText;
+	   devices_ += ';';
          }
       };
 	    //alert(str);
