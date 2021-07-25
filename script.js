@@ -198,8 +198,13 @@ window.onbeforeunload = closeIt;
 	  content += '</TSNNetwork>';
 	  let result = document.getElementById('resultXML');
 	  result.value = content;
+	  save2FS();
   }
   
+function save2FS() {
+	 let content = exportPersistJSON();
+	  persistModelAjax(content);
+}
   /*
   * not used 
   * invert direction of a stream connection
