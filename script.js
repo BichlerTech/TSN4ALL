@@ -255,7 +255,7 @@ function loadProjectAjax() {
          }
       };
 	    //alert(str);
-      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/load.php?command=project", true);
+      xmlhttp.open("GET", "https://www.bichler.tech/snapshot/tsn4all/php/load.php?command=project&t=" + new Date().getTime(), true);
       xmlhttp.send();
   }
   
